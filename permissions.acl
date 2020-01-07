@@ -4,7 +4,7 @@
 /* TOP to BOTTOM read order */
 
 rule Default {
-  description: "Allow all participants access to all resources"
+  description: "Allow all participantss access to all resources"
   participant: "ANY"
   operation: ALL // (CREATE READ UPDATE DELETE)
   resource: "org.hyperledger_composer.scms.Transport"
