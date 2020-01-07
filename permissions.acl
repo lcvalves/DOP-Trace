@@ -1,0 +1,37 @@
+
+
+
+/* TOP to BOTTOM read order */
+
+rule Default {
+  description: "Allow all participantss access to all resources"
+  participant: "ANY"
+  operation: ALL // (CREATE READ UPDATE DELETE)
+  resource: "org.hyperledger_composer.scms.Transport"
+  action: ALLOW //DENY
+}
+rule SystemACL {
+  description: "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+/* Special cases
+*/
+
+rule NetworkAdminUser {
+  description: "Grant business network administrators full access to USER resources"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "**"
+  action: ALLOW
+}
+rule NetworkAdminSystem {
+  description: "Grant business network administrators full access to SYSTEM resources"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
