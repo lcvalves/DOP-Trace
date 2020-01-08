@@ -16,7 +16,7 @@
  * Sample business network definition.
  */
  
-namespace org.example.basic
+namespace org.doptrace
  
  
  

@@ -5,6 +5,6 @@
 query batchTraceability {
   description: "Select batch tracebilty"
   statement:
-      SELECT org.example.basic.Events
+      SELECT org.doptrace.Events
           WHERE (batch == _$batch)
 }
