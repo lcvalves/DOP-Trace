@@ -1,32 +1,16 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * DOP Traceability network definition.
  */
 
-/**
- * Sample business network definition.
- */
- 
 namespace org.doptrace
- 
- 
- 
+
 //---------/* ENUMS */
 enum Units{
     o KG
     o L
     o UNIT
 }
- 
+
 enum State{
     o HARVESTED
     o IN_TRANSIT
@@ -35,7 +19,7 @@ enum State{
     o STORED
     o SOLD
 }
- 
+
 //---------/* CONCEPTS */
 concept Address{
   o String street
@@ -43,14 +27,14 @@ concept Address{
   o String city
   o String country
 }
- 
+
 concept Contacts{
   o String phoneNumber
   o String email
   o String phoneNumber2 optional
 }
- 
- 
+
+
 //---------/* PARTICIPANTS */
 abstract participant User identified by username{
   o String username
@@ -59,17 +43,15 @@ abstract participant User identified by username{
   o String password
   o Contacts contacts
 }
- 
+
 participant SysAdmin extends User{
 }
- 
+
 participant Worker extends User{
-  
-  --> Asset operator // ver se funciona
+  --> Asset operator
 }
- 
+
 participant WorkerAdmin extends Worker{
-  
 }
 
 //---------/* OPERATORS */
@@ -80,26 +62,20 @@ abstract asset ValueChainOperator identified by id{
   o Address address
   o Contacts contacts
 }
- 
-asset Producer extends ValueChainOperator{
 
+asset Producer extends ValueChainOperator{
 }
- 
+
 asset Industry_Retailer extends ValueChainOperator{
-  
 }
- 
+
 asset LogisticsCompany extends ValueChainOperator{
- 
 }
- 
+
 asset CertificationEntity extends ValueChainOperator{
-  
 }
- 
 
 //---------/* EVENTS */
-
 abstract asset Events identified by id{
     o String id
     o String description optional // certos eventos que não precisam
@@ -111,34 +87,34 @@ abstract asset Events identified by id{
     --> Worker worker
     --> Batch batch
 }
- 
+
 asset Harvest extends Events{
     --> Producer producer
 }
- 
+
 asset BatchRegistration extends Events{
     --> Industry_Retailer industry_retailer
 }
- 
+
 asset Transformation extends Events{
     o String[] processes optional // processamento secreto da industria
     --> Industry_Retailer industry_retailer
 }
- 
+
 asset Sale extends Events{
     o Double salePrice default=0.00 range=[0.00,]
     --> Industry_Retailer industry_retailer
 }
- 
+
 asset Storage extends Events{
     --> Industry_Retailer industry_retailer
 }
- 
+
 asset Transport extends Events{
     --> LogisticsCompany logisticsCompany
     o Address destinationAddress
 }
- 
+
 asset BatchCertification extends Events{
     --> CertificationEntity certificationEntity
     --> PDOCertificate pdoCertificate
@@ -146,7 +122,6 @@ asset BatchCertification extends Events{
     o String[] rejectionJustifications optional // não é necessario quando o lote é certificado
 }
 
-  
 //---------/* BATCH */ //verificar situação de evento criar novo lote
 asset Batch identified by id {
     o String id
@@ -154,18 +129,12 @@ asset Batch identified by id {
     o Units unit
     o DateTime creationDate optional
     o State state
-  
   	--> Asset issuer
-  
   	--> Asset owner 
-  
     o Asset[] previousOwners
-  
     --> PDOCertificate pdoProduct optional
-   
-   
 }
- 
+
 //---------/* PDO CERTIFICATE */
 asset PDOCertificate identified by id{
     o String id
@@ -173,11 +142,11 @@ asset PDOCertificate identified by id{
     o String[] regions
     o String[] requirements
 }
- 
+
 transaction setupDemo {
 }
 
-  //Troca de pool
+//Troca de pool
   
 abstract transaction moveBatch{
   --> Batch batch
@@ -215,7 +184,6 @@ transaction C_batchRegistration {
   o Double  numberOfBatchs
   o Double newAmount
   o Units newUnit
-  
 }
   
 transaction query { 
