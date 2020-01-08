@@ -1,9 +1,56 @@
-
-
-
 /* TOP to BOTTOM read order */
 
+rule denyWorkerCRUDVCOs {
+  description: "Worker CAN'T CRUD VCOs"
+  participant: "org.doptrace.Worker"
+  operation: ALL
+  resource: "org.doptrace.ValueChainOperator"
+  action: DENY
+}
 
+rule denyWorkerAdminCRUDWorkerAdmins  {
+  description: "WorkerAdmins CAN'T CRUD other WorkerAdmins"
+  participant: "org.doptrace.WorkerAdmin"
+  operation: ALL
+  resource: "org.doptrace.WorkerAdmin"
+  action: DENY
+}
+
+rule onlyAllowWorkerAdminCRUDofDifferentIdAndVCO {
+  description: "WorkerAdmins CAN ONLY CRUD Workers of same Id and VCO"
+  participant(p): "org.doptrace.WorkerAdmin"
+  operation: ALL
+  resource(v): "org.doptrace.Worker"
+  condition: (p.operator.getIdentifier() == v.operator.getIdentifier() &&
+  p.operator.getType() == v.operator.getType())
+  action: ALLOW
+}
+
+rule denyWorkerCRUD {
+  description: "Workers CAN'T CRUD other Users"
+  participant: "org.doptrace.Worker"
+  operation: ALL
+  resource: "org.doptrace.User"
+  action: DENY
+}
+
+rule denyUsersCRUDWorkersWithNonExistingOperators {
+  description: "Users CAN'T CRUD Workers with a non-existing Operator Id"
+  participant(p): "org.hyperledger.composer.system.NetworkAdmin"
+  operation: CREATE
+  resource(v): "org.doptrace.Worker"
+  condition: (v.operator.isResource() == false) 
+  action: DENY
+}
+
+// ACL Default Rules
+rule Default {
+  description: "Allow all participants access to all resources"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.doptrace.*"
+  action: ALLOW
+}
 
 rule SystemACL {
   description: "System ACL to permit all access"
@@ -13,18 +60,16 @@ rule SystemACL {
   action: ALLOW
 }
 
-/* Special cases
-*/
-
 rule NetworkAdminUser {
-  description: "Grant business network administrators full access to USER resources"
+  description: "Grant business network administrators full access to user resources"
   participant: "org.hyperledger.composer.system.NetworkAdmin"
   operation: ALL
   resource: "**"
   action: ALLOW
 }
+
 rule NetworkAdminSystem {
-  description: "Grant business network administrators full access to SYSTEM resources"
+  description: "Grant business network administrators full access to system resources"
   participant: "org.hyperledger.composer.system.NetworkAdmin"
   operation: ALL
   resource: "org.hyperledger.composer.system.**"
