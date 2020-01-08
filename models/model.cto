@@ -1,5 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
- * DOP Traceability network definition.
+ * Sample business network definition.
  */
 
 namespace org.doptrace
@@ -33,7 +47,6 @@ concept Contacts{
   o String email
   o String phoneNumber2 optional
 }
-
 
 //---------/* PARTICIPANTS */
 abstract participant User identified by username{
@@ -78,9 +91,7 @@ asset CertificationEntity extends ValueChainOperator{
 //---------/* EVENTS */
 abstract asset Events identified by id{
     o String id
-    o String description optional // certos eventos que não precisam
-    o Double latitude optional // certos eventos que não precisam
-    o Double longitude optional // certos eventos que não precisam
+    o String description optional // certos eventos não precisam
     o DateTime timestamp
     o Units unit
     o Double amount default=0.00 range=[0.00,]
@@ -96,8 +107,8 @@ asset BatchRegistration extends Events{
     --> Industry_Retailer industry_retailer
 }
 
-asset Transformation extends Events{
-    o String[] processes optional // processamento secreto da industria
+asset Processing extends Events{
+    o String[] processes optional // processamento(s) secreto(s) da Industry
     --> Industry_Retailer industry_retailer
 }
 
@@ -117,9 +128,16 @@ asset Transport extends Events{
 
 asset BatchCertification extends Events{
     --> CertificationEntity certificationEntity
-    --> PDOCertificate pdoCertificate
+    --> PDOProduct PDOProduct
     o Boolean certification
-    o String[] rejectionJustifications optional // não é necessario quando o lote é certificado
+    o String[] rejectionJustifications optional // não é necessario quando o 'certification' == true
+}
+
+//---------/* EVENTS */
+event checkLocation{
+  	// o Double[2] latLong ?
+    o Double latitude
+    o Double longitude
 }
 
 //---------/* BATCH */ //verificar situação de evento criar novo lote
@@ -129,25 +147,25 @@ asset Batch identified by id {
     o Units unit
     o DateTime creationDate optional
     o State state
-  	--> Asset issuer
-  	--> Asset owner 
+    --> Asset issuer
+    --> Asset owner 
     o Asset[] previousOwners
-    --> PDOCertificate pdoProduct optional
+    --> PDOProduct pdoProduct
 }
 
-//---------/* PDO CERTIFICATE */
-asset PDOCertificate identified by id{
+//---------/* PDO PRODUCT */
+asset PDOProduct identified by id{
     o String id
     o String productName
     o String[] regions
     o String[] requirements
 }
 
+//---------/* TRANSACTIONS */
 transaction setupDemo {
 }
 
-//Troca de pool
-  
+// Troca de pool
 abstract transaction moveBatch{
   --> Batch batch
 }
@@ -162,6 +180,13 @@ transaction B_logisticsToIndustry extends moveBatch{
   --> Industry_Retailer newOwner
 }
   
+transaction C_batchRegistration { // verificação de quantidades p/lote (newLots[].amount = oldLot.amount)
+  --> Batch batch
+  --> Industry_Retailer retailer
+  o Double numberOfBatchs
+  o Double newAmount
+}
+
 transaction D_industryToEntity extends moveBatch{
   --> Industry_Retailer issuer
   --> CertificationEntity newOwner
@@ -176,15 +201,6 @@ transaction F_EntityToLogistics extends moveBatch{
   --> CertificationEntity issuer
   --> LogisticsCompany newOwner
 }  
-  
-  
-transaction C_batchRegistration {
-  --> Batch batch
-  --> Industry_Retailer retailer
-  o Double  numberOfBatchs
-  o Double newAmount
-  o Units newUnit
-}
   
 transaction query { 
 }

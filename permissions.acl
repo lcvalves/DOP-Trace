@@ -26,10 +26,33 @@ rule onlyAllowWorkerAdminCRUDofDifferentIdAndVCO {
   action: ALLOW
 }
 
-rule denyWorkerCRUD {
+rule Ss {
+  description: "Workers CAN'T CRUD other Users"
+  participant: "org.doptrace.Worker"
+  operation: READ
+  resource: "org.doptrace.Worker"
+  action: ALLOW
+}
+
+rule onlyAllowWorkerREADWorkers {
+  description: "Workers CAN'T CRUD other Users"
+  participant: "org.doptrace.Worker"
+  operation: READ
+  resource: "org.doptrace.Worker"
+  action: ALLOW
+}
+
+rule denyWorkerREADWorkerAdmins {
   description: "Workers CAN'T CRUD other Users"
   participant: "org.doptrace.Worker"
   operation: ALL
+  resource: "org.doptrace.User"
+  action: DENY
+}
+rule denyWorkerCUDUsers {
+  description: "Workers CAN'T CUD other Users"
+  participant: "org.doptrace.Worker"
+  operation: CREATE, READ, UPDATE
   resource: "org.doptrace.User"
   action: DENY
 }
