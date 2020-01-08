@@ -11,9 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /**
- * Sample business network definition..
+ * Sample business network definition.
  */
  
 namespace org.example.basic
@@ -64,12 +64,14 @@ participant SysAdmin extends User{
 }
  
 participant Worker extends User{
+  
   --> Asset operator // ver se funciona
 }
  
 participant WorkerAdmin extends Worker{
+  
 }
- 
+
 //---------/* OPERATORS */
 abstract asset ValueChainOperator identified by id{
   o String id
@@ -80,19 +82,24 @@ abstract asset ValueChainOperator identified by id{
 }
  
 asset Producer extends ValueChainOperator{
+
 }
  
 asset Industry_Retailer extends ValueChainOperator{
+  
 }
  
 asset LogisticsCompany extends ValueChainOperator{
+ 
 }
  
 asset CertificationEntity extends ValueChainOperator{
+  
 }
  
- 
+
 //---------/* EVENTS */
+
 abstract asset Events identified by id{
     o String id
     o String description optional // certos eventos que não precisam
@@ -101,11 +108,8 @@ abstract asset Events identified by id{
     o DateTime timestamp
     o Units unit
     o Double amount default=0.00 range=[0.00,]
- 
     --> Worker worker
     --> Batch batch
-    // Situação do batchRegistry e transformation (considerar apenas 1 lote por evento?)
-    o Integer newBatches optional // apenas para os eventos batchRegistry
 }
  
 asset Harvest extends Events{
@@ -137,26 +141,33 @@ asset Transport extends Events{
  
 asset BatchCertification extends Events{
     --> CertificationEntity certificationEntity
-    --> PDOProduct pdoProduct
+    --> PDOCertificate pdoCertificate
     o Boolean certification
     o String[] rejectionJustifications optional // não é necessario quando o lote é certificado
 }
- 
+
+  
 //---------/* BATCH */ //verificar situação de evento criar novo lote
 asset Batch identified by id {
     o String id
     o Double amount default=0.00 range=[0.00,]
     o Units unit
-    o DateTime creationDate
+    o DateTime creationDate optional
     o State state
-    --> Asset issuer
-    --> Asset owner
+  
+  	--> Asset issuer
+  
+  	--> Asset owner 
+  
     o Asset[] previousOwners
-    --> PDOProduct pdoProduct
+  
+    --> PDOCertificate pdoProduct optional
+   
+   
 }
  
 //---------/* PDO CERTIFICATE */
-asset PDOProduct identified by id{
+asset PDOCertificate identified by id{
     o String id
     o String productName
     o String[] regions
@@ -165,12 +176,47 @@ asset PDOProduct identified by id{
  
 transaction setupDemo {
 }
- 
+
+  //Troca de pool
+  
 abstract transaction moveBatch{
   --> Batch batch
 }
- 
-transaction producerToLogistics extends moveBatch{
+  
+transaction A_producerToLogistics extends moveBatch{
   --> Producer issuer
   --> LogisticsCompany newOwner
+}
+  
+transaction B_logisticsToIndustry extends moveBatch{
+  --> LogisticsCompany issuer
+  --> Industry_Retailer newOwner
+}
+  
+transaction D_industryToEntity extends moveBatch{
+  --> Industry_Retailer issuer
+  --> CertificationEntity newOwner
+}
+
+transaction E_EntityToIndustry extends moveBatch{
+  --> CertificationEntity issuer
+  --> Industry_Retailer newOwner
+}
+  
+transaction F_EntityToLogistics extends moveBatch{
+  --> CertificationEntity issuer
+  --> LogisticsCompany newOwner
+}  
+  
+  
+transaction C_batchRegistration {
+  --> Batch batch
+  --> Industry_Retailer retailer
+  o Double  numberOfBatchs
+  o Double newAmount
+  o Units newUnit
+  
+}
+  
+transaction query { 
 }

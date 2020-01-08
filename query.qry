@@ -1,0 +1,10 @@
+/**
+ * New query file
+ */
+
+query batchTraceability {
+  description: "Select batch tracebilty"
+  statement:
+      SELECT org.example.basic.Events
+          WHERE (batch == _$batch)
+}
