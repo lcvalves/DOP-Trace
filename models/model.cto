@@ -65,7 +65,7 @@ participant SysAdmin extends User{
 participant Worker extends User{
   --> Asset operator
 }
- 
+
 participant WorkerAdmin extends Worker{
 }
 
@@ -93,7 +93,9 @@ asset CertificationEntity extends Operator{
 //---------/* EVENTS */
 abstract asset Events identified by id{
     o String id
-    o String description optional // certos eventos não precisam
+    o String description optional
+ //   o Double latitude optional
+ //   o Double longitude
     o DateTime dateTime
     --> Worker worker
     --> Batch batch
@@ -132,7 +134,6 @@ asset Sale extends Events{
 asset Transport extends Events{
     --> Logistics Logistics
     --> Industry_Retailer address
-    
 }
 
 asset Analysis extends Events{
@@ -147,7 +148,7 @@ event checkLocation{
     o Double longitude
 }
 
-//---------/* BATCH */ //verificar situação de evento criar novo lote
+//---------/* BATCH */
 asset Batch identified by id {
     o String id
     o Double amount range=[0.00,]
@@ -190,11 +191,11 @@ transaction B_logisticsToIndustry extends moveBatch{
   --> Industry_Retailer newOwner
 }
   
-transaction C_batchRegistration { // verificação de quantidades p/lote (newLots[].amount = oldLot.amount)
+transaction C_batchRegistration { // verificação de quantidades p/lote (numberOfBatches*newBatchAmount = batch.amount)
   --> Batch batch
   --> Industry_Retailer retailer
-  o Double numberOfBatchs
-  o Double newAmount
+  o Double numberOfBatches
+  o Double newBatchAmount
 }
 
 transaction D_industryToEntity extends moveBatch{
