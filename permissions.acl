@@ -4,7 +4,7 @@ rule denyWorkerCRUDVCOs {
   description: "Worker CAN'T CRUD VCOs"
   participant: "org.doptrace.Worker"
   operation: ALL
-  resource: "org.doptrace.ValueChainOperator"
+  resource: "org.doptrace.Operator"
   action: DENY
 }
 
