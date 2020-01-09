@@ -94,9 +94,7 @@ asset CertificationEntity extends Operator{
 abstract asset Events identified by id{
     o String id
     o String description optional // certos eventos não precisam
-    o DateTime timestamp
-    o Units unit
-    o Double amount default=0.00 range=[0.00,]
+    o DateTime dateTime
     --> Worker worker
     --> Batch batch
 }
@@ -105,17 +103,19 @@ asset Harvest extends Events{
     --> Producer producer
 }
 
+asset QualityAssessment extends Events{
+    --> Industry_Retailer industry_retailer
+    o Double amountDowned range=[0.00,]
+}
+
 asset BatchRegistration extends Events{
     --> Industry_Retailer industry_retailer
+    o Integer[] numberOfBatches range=[1,]
+    o Double[] amount range=[0.00,]
 }
 
 asset Processing extends Events{
-    o String[] processes optional // processamento(s) secreto(s) da Industry
-    --> Industry_Retailer industry_retailer
-}
-
-asset Sale extends Events{
-    o Double salePrice default=0.00 range=[0.00,]
+    o String[] processes optional
     --> Industry_Retailer industry_retailer
 }
 
@@ -123,16 +123,21 @@ asset Storage extends Events{
     --> Industry_Retailer industry_retailer
 }
 
-asset Transport extends Events{
-    --> LogisticsCompany logisticsCompany
-    o Address destinationAddress
+asset Sale extends Events{
+    o Double salePrice range=[0.00,]
+    --> Industry_Retailer buyer
+    --> Industry_Retailer seller
 }
 
-asset BatchCertification extends Events{
+asset Transport extends Events{
+    --> Logistics Logistics
+    --> Industry_Retailer address
+    
+}
+
+asset Analysis extends Events{
     --> CertificationEntity certificationEntity
-    --> PDOProduct PDOProduct
-    o Boolean certification
-    o String[] rejectionJustifications optional // não é necessario quando o 'certification' == true
+    o Boolean certificated default = false
 }
 
 //---------/* EVENTS */
@@ -145,13 +150,16 @@ event checkLocation{
 //---------/* BATCH */ //verificar situação de evento criar novo lote
 asset Batch identified by id {
     o String id
-    o Double amount default=0.00 range=[0.00,]
+    o Double amount range=[0.00,]
     o Units unit
-    o DateTime creationDate optional
+    o DateTime creationDate
+    o DateTime expirationDate
     o State state
-    --> Asset issuer
-    --> Asset owner 
-    o Asset[] previousOwners
+    o Boolean certificated default = false
+    o String rejection_justification optional
+    o Asset[] previousEvents optional
+    --> Asset previousOperator optional
+    --> Asset currentOperator
     --> PDOProduct pdoProduct
 }
 
@@ -174,11 +182,11 @@ abstract transaction moveBatch{
   
 transaction A_producerToLogistics extends moveBatch{
   --> Producer issuer
-  --> LogisticsCompany newOwner
+  --> Logistics newOwner
 }
   
 transaction B_logisticsToIndustry extends moveBatch{
-  --> LogisticsCompany issuer
+  --> Logistics issuer
   --> Industry_Retailer newOwner
 }
   
@@ -201,7 +209,7 @@ transaction E_EntityToIndustry extends moveBatch{
   
 transaction F_EntityToLogistics extends moveBatch{
   --> CertificationEntity issuer
-  --> LogisticsCompany newOwner
+  --> Logistics newOwner
 }  
   
 transaction query { 
