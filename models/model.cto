@@ -28,10 +28,13 @@ enum Units{
 enum State{
     o HARVESTED
     o IN_TRANSIT
+    o APPROVED
     o REGISTERED
     o CERTIFIED
+    o REJECTED
     o STORED
     o SOLD
+    o EXPIRED
 }
 
 //---------/* CONCEPTS */
@@ -45,7 +48,6 @@ concept Address{
 concept Contacts{
   o String phoneNumber
   o String email
-  o String phoneNumber2 optional
 }
 
 //---------/* PARTICIPANTS */
@@ -63,12 +65,12 @@ participant SysAdmin extends User{
 participant Worker extends User{
   --> Asset operator
 }
-
+ 
 participant WorkerAdmin extends Worker{
 }
 
 //---------/* OPERATORS */
-abstract asset ValueChainOperator identified by id{
+abstract asset Operator identified by id{
   o String id
   o String name
   o String description
@@ -76,16 +78,16 @@ abstract asset ValueChainOperator identified by id{
   o Contacts contacts
 }
 
-asset Producer extends ValueChainOperator{
+asset Producer extends Operator{
 }
 
-asset Industry_Retailer extends ValueChainOperator{
+asset Industry_Retailer extends Operator{
 }
 
-asset LogisticsCompany extends ValueChainOperator{
+asset Logistics extends Operator{
 }
 
-asset CertificationEntity extends ValueChainOperator{
+asset CertificationEntity extends Operator{
 }
 
 //---------/* EVENTS */
