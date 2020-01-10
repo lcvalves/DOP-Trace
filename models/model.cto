@@ -28,7 +28,6 @@ enum Units{
 enum State{
     o REGISTERED
     o IN_TRANSIT
-    o APPROVED
     o CERTIFIED
     o STORED
     o SOLD
