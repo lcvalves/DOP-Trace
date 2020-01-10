@@ -26,15 +26,13 @@ enum Units{
 }
 
 enum State{
-    o HARVESTED
+    o REGISTERED
     o IN_TRANSIT
     o APPROVED
-    o REGISTERED
     o CERTIFIED
-    o REJECTED
     o STORED
     o SOLD
-    o EXPIRED
+    o DISCARDED
 }
 
 //---------/* CONCEPTS */
@@ -63,7 +61,7 @@ participant SysAdmin extends User{
 }
 
 participant Worker extends User{
-  --> Asset operator
+  --> Operator operator
 }
 
 participant WorkerAdmin extends Worker{
@@ -94,29 +92,24 @@ asset CertificationEntity extends Operator{
 abstract asset Events identified by id{
     o String id
     o String description optional
- //   o Double latitude optional
- //   o Double longitude
+    o Double latitude optional
+    o Double longitude optional
     o DateTime dateTime
+    --> Operator operator
     --> Worker worker
-    --> Batch batch
+    --> Batch[] batches
 }
 
-asset Harvest extends Events{
+asset ProductRegistration extends Events{
     --> Producer producer
 }
 
 asset QualityAssessment extends Events{
-    --> Industry_Retailer industry_retailer
     o Double amountDowned range=[0.00,]
-}
-
-asset BatchRegistration extends Events{
     --> Industry_Retailer industry_retailer
-    o Integer[] numberOfBatches range=[1,]
-    o Double[] amount range=[0.00,]
 }
 
-asset Processing extends Events{
+asset Transformation extends Events{
     o String[] processes optional
     --> Industry_Retailer industry_retailer
 }
@@ -132,21 +125,21 @@ asset Sale extends Events{
 }
 
 asset Transport extends Events{
-    --> Logistics Logistics
-    --> Industry_Retailer address
+    --> Logistics logistics
+    --> Industry_Retailer destinationAddress
 }
 
 asset Analysis extends Events{
-    --> CertificationEntity certificationEntity
     o Boolean certificated default = false
+    --> CertificationEntity certificationEntity
 }
 
-//---------/* EVENTS */
+/*--------- EVENTS 
 event checkLocation{
-  	// o Double[2] latLong ?
+  	 o Double[2] latLong ?
     o Double latitude
     o Double longitude
-}
+} */
 
 //---------/* BATCH */
 asset Batch identified by id {
@@ -157,17 +150,20 @@ asset Batch identified by id {
     o DateTime expirationDate
     o State state
     o Boolean certificated default = false
-    o String rejection_justification optional
-    o Asset[] previousEvents optional
+    --> Events[] events optional
     --> Asset previousOperator optional
     --> Asset currentOperator
-    --> PDOProduct pdoProduct
+    --> Product pdoProduct
 }
 
 //---------/* PDO PRODUCT */
-asset PDOProduct identified by id{
+asset Product identified by id{
     o String id
-    o String productName
+    o String name
+    o String description
+}
+
+asset DOP_Product extends Product{
     o String[] regions
     o String[] requirements
 }
