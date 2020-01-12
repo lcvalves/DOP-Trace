@@ -12,10 +12,6 @@
  * limitations under the License.
  */
 
-/**
- * Sample business network definition.
- */
-
 namespace org.doptrace
 
 //---------/* ENUMS */
@@ -28,6 +24,7 @@ enum Units{
 enum State{
     o REGISTERED
     o IN_TRANSIT
+    o TRANSFORMED
     o CERTIFIED
     o STORED
     o SOLD
@@ -37,14 +34,14 @@ enum State{
 //---------/* CONCEPTS */
 concept Address{
   o String street
-  o String zip regex=/^[0-9]{4}-[0-9]{3}/
+  o String zip
   o String city
   o String country
 }
 
 concept Contacts{
   o String phoneNumber
-  o String email
+  o String email // adicionar regex @
 }
 
 //---------/* PARTICIPANTS */
@@ -60,7 +57,7 @@ participant SysAdmin extends User{
 }
 
 participant Worker extends User{
-  --> Operator operator
+  --> Operator operator // operator para qual o worker trabalha
 }
 
 participant WorkerAdmin extends Worker{
@@ -91,51 +88,66 @@ asset CertificationEntity extends Operator{
 abstract asset Events identified by id{
     o String id
     o String description optional
-    o Double latitude optional
+    o Double latitude optional // certos eventos não necessitam de registo de latLong
     o Double longitude optional
     o DateTime dateTime
-    --> Operator operator
-    --> Worker worker
-    --> Batch[] batches
+    --> Worker worker // worker associado ao evento
+    // Operators associados a cada evento estão definidos especificamente nas extensões de Events em baixo
 }
 
 asset ProductRegistration extends Events{
+    o Batch newBatch // produtor cria e regista batch
     --> Producer producer
 }
 
 asset QualityAssessment extends Events{
-    o Double amountDowned range=[0.00,]
+    o Double amountDowned default = 0.00 range=[0.00,] 
+    o Batch newBatch optional // em casos em que Industry_Retailer seja diferente que a última QualityAssessment do assessedBatch E/OU amountDowned!=0, newBatch não é optional e terá as mesmas propriedades de assessedBatch (lógica terá de verificar que, caso amountDowned!=0, que newBatch.amount = assessedBatch.amount - amountDowned)
     --> Industry_Retailer industry_retailer
+    --> Batch assessedBatch // batch que foi avaliado
 }
 
 asset Transformation extends Events{
-    o String[] processes optional
+    o Batch[] newBatches // pode criar 1 ou vários batches de com quantidades alteradas que foram usadas na transformação
+    o String[] processes optional // indústria pode não querer revelar o processo de transformação
     --> Industry_Retailer industry_retailer
+    --> Batch[] usedBatches // batches usados na transformação
 }
 
 asset Storage extends Events{
     --> Industry_Retailer industry_retailer
+    --> Batch[] storedBatches // batches armazenados neste evento
 }
 
 asset Sale extends Events{
     o Double salePrice range=[0.00,]
-    --> Industry_Retailer buyer
-    --> Industry_Retailer seller
+    o Batch[] newBatches // batch(es) pode(m) ser vendido(s) na totalidade ou em quantidades diferentes (lógica terá de verificar se somatório de soldBatches.amount == newBatches.amount, tal como identificar corretamente os issuers e owners de cada batch)
+    --> Industry_Retailer seller // vendedor
+    --> Industry_Retailer buyer // comprador
+    --> Batch[] soldBatches // batches usados na venda
 }
 
 asset Transport extends Events{
     --> Logistics logistics
-    --> Industry_Retailer destinationAddress
+    --> Industry_Retailer destinationAddress // local de destino será sempre um operator industry_retailer
+    --> Batch[] transportedBatches
 }
 
 asset Analysis extends Events{
     o Boolean certificated default = false
     --> CertificationEntity certificationEntity
+    --> Batch batch // só é possível analisar 1 batch de cada vez
+}
+
+asset Discard extends Events{
+    o String motive
+    --> Industry_Retailer industry_retailer // apenas industry_retailer pode descartar batches
+    --> Batch[] discardedBatches // podemos descartar vários baixos no mesmo evento desde que tenham o mesmo motivo
 }
 
 /*--------- EVENTS 
 event checkLocation{
-  	 o Double[2] latLong ?
+  	o Double[2] latLong ?
     o Double latitude
     o Double longitude
 } */
@@ -149,10 +161,10 @@ asset Batch identified by id {
     o DateTime expirationDate
     o State state
     o Boolean certificated default = false
-    --> Events[] events optional
-    --> Asset previousOperator optional
-    --> Asset currentOperator
-    --> Product pdoProduct
+    --> Events[] previousEvents optional
+    --> Operator previousOperator optional
+    --> Operator currentOperator
+    --> Product product
 }
 
 //---------/* PDO PRODUCT */
@@ -173,24 +185,22 @@ transaction setupDemo {
 
 // Troca de pool
 abstract transaction moveBatch{
-  --> Batch batch
+  --> Batch[] batches
 }
   
 transaction A_producerToLogistics extends moveBatch{
   --> Producer issuer
   --> Logistics newOwner
 }
-  
-transaction B_logisticsToIndustry extends moveBatch{
-  --> Logistics issuer
+
+transaction B_producerToIndustry extends moveBatch{
+  --> Producer issuer
   --> Industry_Retailer newOwner
 }
   
-transaction C_batchRegistration { // verificação de quantidades p/lote (numberOfBatches*newBatchAmount = batch.amount)
-  --> Batch batch
-  --> Industry_Retailer retailer
-  o Double numberOfBatches
-  o Double newBatchAmount
+transaction C_logisticsToIndustry extends moveBatch{
+  --> Logistics issuer
+  --> Industry_Retailer newOwner
 }
 
 transaction D_industryToEntity extends moveBatch{
@@ -198,12 +208,17 @@ transaction D_industryToEntity extends moveBatch{
   --> CertificationEntity newOwner
 }
 
-transaction E_EntityToIndustry extends moveBatch{
+transaction E_industryToLogistics extends moveBatch{
+  --> Industry_Retailer issuer
+  --> Logistics newOwner
+}
+
+transaction F_EntityToIndustry extends moveBatch{
   --> CertificationEntity issuer
   --> Industry_Retailer newOwner
 }
   
-transaction F_EntityToLogistics extends moveBatch{
+transaction G_EntityToLogistics extends moveBatch{
   --> CertificationEntity issuer
   --> Logistics newOwner
 }  

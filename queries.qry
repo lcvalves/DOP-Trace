@@ -2,9 +2,10 @@
  * New query file
  */
 
+/*
 query batchTraceability {
   description: "Select batch tracebilty"
   statement:
       SELECT org.doptrace.Events
           WHERE (batch == _$batch)
-}
+} */

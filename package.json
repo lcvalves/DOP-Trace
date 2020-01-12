@@ -1,7 +1,7 @@
 {
     "name": "dop-trace",
     "author": "author",
-    "description": "Projeto III - Luís Alves 18490 / Tiago Carvalhido 17491",
+    "description": "Traceability of DOP/DOC products in their value chain",
     "version": "0.0.2-deploy.0",
     "devDependencies": {
         "browserfs": "^1.2.0",

@@ -1,72 +1,95 @@
 /* TOP to BOTTOM read order */
 
-rule denyWorkerCRUDVCOs {
-  description: "Worker CAN'T CRUD VCOs"
+//---------/* BATCHES */
+
+rule denyL_CE_CREATEbatches { // não funciona ainda
+  description: "Workers CAN'T UD Batches"
+  participant(p): "org.doptrace.Worker"
+  operation: CREATE
+  resource(r): "org.doptrace.Batch"
+  condition: (p.operator == Logistics)
+  action: DENY
+}
+
+rule denyWorkerUDbatches {
+  description: "Workers CAN'T UD Batches"
   participant: "org.doptrace.Worker"
-  operation: ALL
+  operation: UPDATE, DELETE
+  resource: "org.doptrace.Batch"
+  action: DENY
+}
+
+//---------/* EVENTS */
+
+//---------/* OPERATORS */
+rule denyWorkerCUDoperators {
+  description: "Worker CAN'T CUD Operators"
+  participant: "org.doptrace.Worker"
+  operation: CREATE, UPDATE, DELETE
   resource: "org.doptrace.Operator"
   action: DENY
 }
 
-rule denyWorkerAdminCRUDWorkerAdmins  {
-  description: "WorkerAdmins CAN'T CRUD other WorkerAdmins"
+//---------/* USERS */
+rule denyCRUDWorkersWithNonExistingOperators {
+  description: "Users CAN'T CRUD Workers with a non-existing Operator Id"
+  participant(p): "org.doptrace.User"
+  operation: CREATE
+  resource(r): "org.doptrace.Worker"
+  condition: (r.operator.isResource() == false)
+  action: DENY
+}
+
+rule denyWorkerAdminCUDworkerAdmins  {
+  description: "WorkerAdmins CAN'T CUD other WorkerAdmins"
   participant: "org.doptrace.WorkerAdmin"
-  operation: ALL
+  operation: CREATE, UPDATE, DELETE
   resource: "org.doptrace.WorkerAdmin"
   action: DENY
 }
 
-rule onlyAllowWorkerAdminCRUDofDifferentIdAndVCO {
-  description: "WorkerAdmins CAN ONLY CRUD Workers of same Id and VCO"
+rule allowWorkerAdminREADworkerAdmin  {
+  description: "WorkerAdmins CAN READ other WorkerAdmins"
+  participant: "org.doptrace.WorkerAdmin"
+  operation: READ
+  resource: "org.doptrace.WorkerAdmin"
+  action: ALLOW
+}
+
+rule allowWorkerAdminCUDworkerOfSameOperatorID{
+  description: "WorkerAdmins CAN ONLY CUD Workers of same Operator ID"
   participant(p): "org.doptrace.WorkerAdmin"
-  operation: ALL
+  operation: CREATE, UPDATE, DELETE
   resource(v): "org.doptrace.Worker"
-  condition: (p.operator.getIdentifier() == v.operator.getIdentifier() &&
-  p.operator.getType() == v.operator.getType())
+  condition: (p.operator.getIdentifier() == v.operator.getIdentifier())
   action: ALLOW
 }
 
-rule Ss {
-  description: "Workers CAN'T CRUD other Users"
+rule denyWorkerREADworkerAdmin{
+  description: "Workers CAN'T READ WorkerAdmins"
+  participant: "org.doptrace.Worker"
+  operation: READ
+  resource: "org.doptrace.WorkerAdmin"
+  action: DENY
+}
+
+rule allowWorkerREADworker{
+  description: "Workers CAN ONLY READ Workers"
   participant: "org.doptrace.Worker"
   operation: READ
   resource: "org.doptrace.Worker"
   action: ALLOW
 }
 
-rule onlyAllowWorkerREADWorkers {
-  description: "Workers CAN'T CRUD other Users"
-  participant: "org.doptrace.Worker"
-  operation: READ
-  resource: "org.doptrace.Worker"
-  action: ALLOW
-}
-
-rule denyWorkerREADWorkerAdmins {
-  description: "Workers CAN'T CRUD other Users"
+rule denyWorkerCRUDusers {
+  description: "Workers CAN'T CRUD Users"
   participant: "org.doptrace.Worker"
   operation: ALL
   resource: "org.doptrace.User"
   action: DENY
 }
-rule denyWorkerCUDUsers {
-  description: "Workers CAN'T CUD other Users"
-  participant: "org.doptrace.Worker"
-  operation: CREATE, READ, UPDATE
-  resource: "org.doptrace.User"
-  action: DENY
-}
 
-rule denyUsersCRUDWorkersWithNonExistingOperators {
-  description: "Users CAN'T CRUD Workers with a non-existing Operator Id"
-  participant(p): "org.hyperledger.composer.system.NetworkAdmin"
-  operation: CREATE
-  resource(v): "org.doptrace.Worker"
-  condition: (v.operator.isResource() == false) 
-  action: DENY
-}
-
-// ACL Default Rules
+//---------/* ACL DEFAULT RULES */
 rule Default {
   description: "Allow all participants access to all resources"
   participant: "ANY"
