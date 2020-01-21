@@ -1,25 +1,123 @@
 /* TOP to BOTTOM read order */
 
-//---------/* BATCHES */
+//---------/* PRODUCTS */
 
-rule denyL_CE_CREATEbatches { // não funciona ainda
-  description: "Workers CAN'T UD Batches"
+rule allowWorkerOfCEntityCRUDproducts {
+  description: "Workers of Certification Entity CAN CUD Products"
   participant(p): "org.doptrace.Worker"
-  operation: CREATE
-  resource(r): "org.doptrace.Batch"
-  condition: (p.operator == Logistics)
+  operation: ALL
+  resource(r): "org.doptrace.DOP_Product"
+  condition: (p.operator == org.doptrace.CertificationEntity)
+  action: ALLOW
+}
+
+rule denyWorkerCUDproducts {
+  description: "Workers CAN'T CUD Products"
+  participant: "org.doptrace.Worker"
+  operation: CREATE, UPDATE, DELETE
+  resource: "org.doptrace.Product"
   action: DENY
 }
 
-rule denyWorkerUDbatches {
-  description: "Workers CAN'T UD Batches"
+//---------/* BATCHES */
+rule denyWorkerCUDbatches {
+  description: "Workers CAN'T CUD Batches"
   participant: "org.doptrace.Worker"
-  operation: UPDATE, DELETE
+  operation: CREATE, UPDATE, DELETE
   resource: "org.doptrace.Batch"
   action: DENY
 }
 
 //---------/* EVENTS */
+rule denyWorkersCRUDeventsOfDifferentWorkerId {
+  description: "Workers CAN'T CRUD events of different Worker ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.Events"
+  condition: (p.getIdentifier() != r.worker.getIdentifier())
+  action: DENY
+}
+
+rule allowWorkersCRUDanalysisOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Analysis of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.Analysis"
+  condition: (p.operator.getIdentifier() == r.certificationEntity.getIdentifier())
+  action: ALLOW
+}
+
+rule allowWorkersCRUDtransportOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Transport of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.Transport"
+  condition: (p.operator.getIdentifier() == r.logistics.getIdentifier())
+  action: ALLOW
+}
+
+rule allowWorkersCRUDdiscardOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Discard of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.Discard"
+  condition: (p.operator.getIdentifier() == r.industry_retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule allowWorkersCRUDsaleOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Sale of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.Sale"
+  condition: (p.operator.getIdentifier() == r.seller.getIdentifier()
+             && p.operator.getIdentifier() != r.buyer.getIdentifier())
+  action: ALLOW
+}
+
+rule allowWorkersCRUDstorageOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Storage of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.Storage"
+  condition: (p.operator.getIdentifier() == r.industry_retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule allowWorkersCRUDtransformationOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Transformation of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.Transformation"
+  condition: (p.operator.getIdentifier() == r.industry_retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule allowWorkersCRUDqualityAssessmentOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Quality Assessment of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.QualityAssessment"
+  condition: (p.operator.getIdentifier() == r.industry_retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule allowWorkersCRUDproductRegistrationOfSameOperatorId {
+  description: "Workers CAN ONLY CRUD Product Registration of same Operator ID"
+  participant(p): "org.doptrace.Worker"
+  operation: ALL
+  resource(r): "org.doptrace.ProductRegistration"
+  condition: (p.operator.getIdentifier() == r.producer.getIdentifier())
+  action: ALLOW
+}
+
+rule denyWorkersCRUDevents {
+  description: "Workers CAN'T CRUD other events"
+  participant: "org.doptrace.Worker"
+  operation: ALL
+  resource: "org.doptrace.Events"
+  action: DENY
+}
 
 //---------/* OPERATORS */
 rule denyWorkerCUDoperators {
