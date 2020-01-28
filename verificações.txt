@@ -1,0 +1,118 @@
+Verificações & Validações
+
+* mudar nome de atributo dos evntos de producer, logistics etc all to operator *
+
+ProductRegistration:
+*fazer ciclo for para os batches dentro do array*
+- newBatch.size() >= 1
+- newBatch.amount > 0 (*REGEX*)
+- newBatch.creationDate = dateTime(sys)
+- newBatch.expiration >= newBatch.creationDate + 1 hour
+- newBatch.state = "REGISTERED"
+- newBatch.certificated = false (*DEFAULT*)
+- newBatch.previousEvents = []
+- newBatch.previousOperator = null
+- newBatch.currentOperator = LoggedUser.operator
+- newBatch.currentOperator.type = Producer
+- newBatch.product.exists() = true
+- newBatch.product = a todos do array
+- operator = newBatch.currentOperator
+- dateTime = newBatch.creationDate
+- worker = LoggedUser
+
+Transport:
+- transportedBatches.size() >= 1
+- transportedBatches.batch.state = "IN_TRANSIT"
+- transportedBatches.batch1.previousOperator = transportedBatches.batch1.previousEvents.lastPushed().operator
+- transportedBatches.batch.previousEvents.push(this)
+- transportedBatches.product = a todos do array
+- destinationAddress = tem que ser industry-retailer e existir
+- operator = LoggedUser.operator
+- dateTime = data system
+- worker = LoggedUser
+
+QualityAssessment:
+- amountDowned >= 0 (*REGEX*)
+- newBatch.exists() = true
+- newBatch.amount > 0 (*REGEX*)
+- newBatch.creationDate = dateTime(sys)
+- newBatch.expiration >= newBatch.creationDate + 1 hour
+- newBatch.state = "REGISTERED"
+- newBatch.certificated = false (*DEFAULT*)
+- newBatch.previousEvents = [ProductRegistration || ProductRegistration, Transport]
+- newBatch.previousOperator = newBatch.previousEvents.lastPushed().operator
+- newBatch.currentOperator = LoggedUser.operator
+- newBatch.currentOperator.type = industry_retailer
+- newBatch.product = previousEvents[productRegistration.newBatch.product]
+- operator = LoggedUser.operator
+- assessedBatch.state = "REGISTERED || DISCARDED"
+- assessedBatch.previousOperator = assessedBatch.previousEvents.lastPushed().operator
+- assessedBatch.previousEvents.push(this)
+- dateTime = newBatch.creationDate
+- worker = LoggedUser
+
+Transformation:
+- newBatch.exists() = true
+- newBatch.amount > 0 (*REGEX*)
+- newBatch.creationDate = dateTime(sys)
+- newBatch.expiration >= newBatch.creationDate + 1 hour
+- newBatch.state = "TRANSFORMED"
+- newBatch.certificated = false (*DEFAULT*)
+- newBatch.previousEvents = [ProductRegistration, Transport, QualityAssessment]
+- newBatch.previousOperator = newBatch.previousEvents.lastPushed().operator
+- newBatch.currentOperator = LoggedUser.operator
+- newBatch.currentOperator.type = industry_retailer
+- newBatch.product.exists() = true
+- operator = LoggedUser.operator
+- usedBatches.size() == amountPerBatch.size()
+- usedBatches.size() >= 1
+- amountPerBatch.eachValue() > 0 (*REGEX*)
+«verificar batches de reserva se herdam todos os mesmo dados que usedBatch
+exceto a amount = usedBatch[i].amount - amountPerBatch[i]»
+- dateTime = newBatch.creationDate
+- worker = LoggedUser
+
+Analysis:
+- batch.exists() = true
+- batch.state = "CERTIFIED" || "REJECTED"
+- batch.certificated = certificated (*DEFAULT*)
+- batch.previousOperator = batch.previousEvents.lastPushed().operator
+- batch.previousEvents.push(this)
+- batch.currentOperator = LoggedUser.operator
+- operator = LoggedUser.operator
+- dateTime = sysDate
+- worker = LoggedUser
+
+Storage:
+- storedBatches.size() >= 1
+- storedBatches.state = "STORED"
+- storedBatches.previousOperator = batch.previousEvents.lastPushed().operator
+- storedBatches.previousEvents.push(this)
+- storedBatches.currentOperator = LoggedUser.operator
+- operator = LoggedUser.operator
+- dateTime = sysDate
+- worker = LoggedUser
+
+Sale:
+- soldBatches[i].amount = amountPerBatch[i].amount
+- soldBatches.state = "SOLD"
+- soldBatches.previousEvents.push(this)
+- soldBatches.previousOperator = batch.previousEvents.lastPushed().operator
+- soldBatches.currentOperator = LoggedUser.operator
+- operator = LoggedUser.operator
+- salePrice.size() >= 1
+- salePrice.size() == amountPerBatch.size() == soldBatches.size()
+«verificar batches de reserva se herdam mesmo dados que soldBatches com a amount = usedBatch[i].amount - amountPerBatch[i]»
+- dateTime = newBatch.creationDate
+- worker = LoggedUser
+
+Discard:
+- discardedBatches >= 1
+- discardedBatches.state = "DISCARDED"
+- discardedBatches.previousEvents.push(this)
+- discardedBatches.previousOperator = batch.previousEvents.lastPushed().operator
+- discardedBatches.currentOperator = LoggedUser.operator
+- operator = LoggedUser.operator
+- dateTime = newBatch.creationDate
+- worker = LoggedUser
+
