@@ -130,7 +130,7 @@ asset Sale extends Events{
     o Double[] salePrice range=[0.00,]
     o Batch newBatch optional // batch(es) pode(m) ser vendido(s) na totalidade ou em quantidades diferentes (lógica terá de verificar se somatório de soldBatches.amount == newBatches.amount, tal como identificar corretamente os issuers e owners de cada batch)
     --> Industry_Retailer seller // vendedor
-    --> Industry_Retailer buyer // comprador
+    --> Industry_Retailer buyer optional// comprador
    
     o Double[] amountPerBatch
    
