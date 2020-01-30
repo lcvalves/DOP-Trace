@@ -11,16 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace org.doptrace
- 
+
 //---------/* ENUMS */
 enum Units{
     o KG
     o L
     o UNIT
 }
- 
+
 enum State{
     o REGISTERED
     o IN_TRANSIT
@@ -31,8 +31,8 @@ enum State{
     o DISCARDED
     o DISABLED
 }
- 
- 
+
+
 //---------/* PARTICIPANTS */
 abstract participant User identified by username{
   o String username
@@ -42,18 +42,18 @@ abstract participant User identified by username{
   o String phoneNumber
   o String email
 }
- 
+
 participant SysAdmin extends User{
 }
- 
+
 participant Worker extends User{
- 
+  
   --> Operator operator // operator para qual o worker trabalha
 }
- 
+
 participant WorkerAdmin extends Worker{
 }
- 
+
 //---------/* OPERATORS */
 abstract asset Operator identified by id{
   o String id
@@ -65,168 +65,170 @@ abstract asset Operator identified by id{
   o String country
   o String phoneNumber
   o String email
- 
- 
+
+  
 }
- 
+
 asset Producer extends Operator{
 }
- 
+
 asset Industry_Retailer extends Operator{
 }
- 
+
 asset Logistics extends Operator{
 }
- 
+
 asset CertificationEntity extends Operator{
 }
- 
+
 //---------/* EVENTS */
 abstract asset Events identified by id{
     o String id
-    o String description
+    o String description 
     o Double latitude optional // certos eventos não necessitam de registo de latLong
     o Double longitude optional
     o DateTime dateTime
     --> Worker worker // worker associado ao evento
     // Operators associados a cada evento estão definidos especificamente nas extensões de Events em baixo
 }
- 
+
 asset ProductRegistration extends Events{
- 
+  
   o Batch newBatch optional // Relation: 1 Factory -> 1 AssetRegistry, logo sendo optional nao obriga  a partir do modelo a criar um novo batch, mas sim cria a partir da transação.
- 
+  
    -->Producer operator
 }
- 
+
 asset QualityAssessment extends Events{
-    o Double amountDowned  range = [0.00,]
+    o Double amountDowned  range = [0.00,] 
     o Batch newBatch optional // em casos em que Industry_Retailer seja diferente que a última QualityAssessment do assessedBatch E/OU amountDowned!=0, newBatch não é optional e terá as mesmas propriedades de assessedBatch (lógica terá de verificar que, caso amountDowned!=0, que newBatch.amount = assessedBatch.amount - amountDowned)
     --> Industry_Retailer operator
     --> Batch assessedBatch // batch que foi avaliado
 }
- 
+
 asset Transformation extends Events{
-    o Batch newBatch optional   // cria apenas um batch do novo produto e os batchs com quantidade que      sobraram sao criados atraves da logica da transação.
-   
+    o Batch newBatch optional   // cria apenas um batch do novo produto e os batchs com quantidade que 		sobraram sao criados atraves da logica da transação. 
+    
     o String[] processes optional // indústria pode não querer revelar o processo de transformação
     --> Industry_Retailer operator
     --> Batch[] usedBatches // batches usados na transformação
     o Double[] amountPerBatch range=[0.00,] // quantidade usada por cada batch para a criação do novo batch
-   
+    
     // Lenght de amountPerBatch e de usedBatchs tem de ser a mesma (Verificação)
-   
-    //Amount de Batch criado na logica é igual a usedBatchs[i].amount - amountPerBatch[i]
+    
+    //Amount de Batch criado na logica é igual a usedBatchs[i].amount - amountPerBatch[i] 
 }
- 
- 
- 
+
+
+
 asset Storage extends Events{
     --> Industry_Retailer operator
     --> Batch[] storedBatches // batches armazenados neste evento
 }
- 
+
 asset Sale extends Events{
     o Double[] salePrice range=[0.00,]
     o Batch newBatch optional // batch(es) pode(m) ser vendido(s) na totalidade ou em quantidades diferentes (lógica terá de verificar se somatório de soldBatches.amount == newBatches.amount, tal como identificar corretamente os issuers e owners de cada batch)
     --> Industry_Retailer seller // vendedor
-    --> Industry_Retailer buyer optional// comprador
-   
+    --> Industry_Retailer buyer optional // comprador
+    
     o Double[] amountPerBatch
-   
+    
     --> Batch[] soldBatches // batches usados na venda
 }
- 
+
 asset Transport extends Events{
     --> Logistics operator
     --> Industry_Retailer destinationAddress // local de destino será sempre um operator industry_retailer
     --> Batch[] transportedBatches
 }
- 
+
 asset Analysis extends Events{
     o Boolean certificated default = false
     --> CertificationEntity operator
     --> Batch batch // só é possível analisar 1 batch de cada vez
 }
- 
+
 asset Discard extends Events{
     o String motive
     --> Industry_Retailer operator // apenas industry_retailer pode descartar batches
     --> Batch[] discardedBatches // podemos descartar vários baixos no mesmo evento desde que tenham o mesmo motivo
 }
- 
- 
+
+
 //---------/* BATCH */
 asset Batch identified by id {
-    o String id
-    o Double amount range = [0.001,]
-    o Units unit
-    o DateTime creationDate
-    o DateTime expirationDate
+    o String id 
+    o Double amount range = [0.001,] 
+    o Units unit 
+    o DateTime creationDate 
+    o DateTime expirationDate 
     o State state  
-    o Boolean certificated default = false
-    --> Events[] previousEvents
+    o Boolean certificated default = false 
+    --> Events[] previousEvents 
     --> Operator previousOperator  optional
     --> Operator currentOperator optional
-    --> Product product
+    --> Product product 
 }
- 
+
 //---------/* PDO PRODUCT */
 asset Product identified by id{
     o String id
     o String name
     o String description
 }
- 
+
 asset DOP_Product extends Product{
     o String[] regions
     o String[] requirements
 }
- 
-   
- 
+
+    
+  
 transaction transactionProductRegistration {
-    o ProductRegistration productRegistration
-   
+	o ProductRegistration productRegistration
+  	
 }
- 
- 
+  
+  
   transaction transactionQualityAssessement {
-    o QualityAssessment quality
+  	o QualityAssessment quality
 }
- 
- 
+  
+  
   transaction transactionTransformation {
-    o Transformation transformation
+  	o Transformation transformation
 }
- 
+  
   transaction transactionStorage{
   o Storage storage
 }
- 
- 
+  
+  
 transaction transactionSale{
   o Sale sale
 }
- 
- 
+  
+
   transaction transactionTransport{
   o Transport transport
 }
- 
- 
+  
+  
 transaction transactionAnalysis{
   o Analysis analysis
 }
- 
- 
-transaction transactionDiscard{
+  
+  
+transaction transactionDiscard{ 
   o Discard discard
 }
- 
- 
- 
- 
+
+  
+
+
 //---------/* TRANSACTIONS */
 transaction setupDemo {
 }
+    
+
