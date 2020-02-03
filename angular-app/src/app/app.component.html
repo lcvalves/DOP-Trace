@@ -1,0 +1,112 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <p class="network-name">Hyperledger Fabric Chaincode</p>
+        <p class="navbar-brand">Angular@Hyperledger</p>
+      </div>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown active">
+            <a class="dropdown-toggle" data-toggle="dropdown">Assets</a>
+            <ul class="dropdown-menu scrollable-menu">
+              
+              <li><a [routerLink]="['/ProductRegistration']">Product Registration</a></li>
+              
+              <li><a [routerLink]="['/QualityAssessment']">Quality Assessment</a></li>
+              
+              <li><a [routerLink]="['/Transformation']">Transformation</a></li>
+              
+              <li><a [routerLink]="['/Storage']">Storage</a></li>
+              
+              <li><a [routerLink]="['/Sale']">Sale</a></li>
+              
+              <li><a [routerLink]="['/Transport']">Transport</a></li>
+              
+              <li><a [routerLink]="['/Analysis']">Analysis</a></li>
+              
+              <li><a [routerLink]="['/Discard']">Discard</a></li>
+              
+            </ul>
+        </li>
+
+        <li class="dropdown active">
+          <a class="dropdown-toggle" data-toggle="dropdown">Operators</a>
+          <ul class="dropdown-menu scrollable-menu">
+            
+            <li><a [routerLink]="['/Producer']">Producer</a></li>
+            
+            <li><a [routerLink]="['/Industry_Retailer']">Industry Retailer</a></li>
+            
+            <li><a [routerLink]="['/Logistics']">Logistics Company</a></li>
+            
+            <li><a [routerLink]="['/CertificationEntity']">Certification Entity</a></li>
+          </ul>
+      </li>
+
+      <li class="dropdown active">
+        <a class="dropdown-toggle" data-toggle="dropdown">Batch & Products</a>
+        <ul class="dropdown-menu scrollable-menu">
+          
+          <li><a [routerLink]="['/Batch']">Batch</a></li>
+              
+              <li><a [routerLink]="['/Product']">Product</a></li>
+              
+              <li><a [routerLink]="['/DOP_Product']">DOP Product</a></li>
+
+        </ul>
+    </li>
+
+        <li class="dropdown active">
+          <a class="dropdown-toggle" data-toggle="dropdown">Management</a>
+          <ul class="dropdown-menu scrollable-menu">
+            
+            <li><a [routerLink]="['/SysAdmin']">System Admin</a></li>
+            
+            <li><a [routerLink]="['/Worker']">Worker</a></li>
+            
+            <li><a [routerLink]="['/WorkerAdmin']">Worker Admin</a></li>
+            
+          </ul>
+      </li>
+      <li class="dropdown active">
+        <a class="dropdown-toggle" data-toggle="dropdown">Transactions</a>
+        <ul class="dropdown-menu scrollable-menu">
+          
+          <li><a [routerLink]="['/transactionProductRegistration']">Product Registration</a></li>
+          
+          <li><a [routerLink]="['/transactionQualityAssessement']">Quality Assessement</a></li>
+          
+          <li><a [routerLink]="['/transactionTransformation']">Transformation</a></li>
+          
+          <li><a [routerLink]="['/transactionStorage']">Storage</a></li>
+          
+          <li><a [routerLink]="['/transactionSale']">Sale</a></li>
+          
+          <li><a [routerLink]="['/transactionTransport']">Transport</a></li>
+          
+          <li><a [routerLink]="['/transactionAnalysis']">Analysis</a></li>
+          
+          <li><a [routerLink]="['/transactionDiscard']">Discard</a></li>
+          
+          <li><a [routerLink]="['/setupDemo']">Demo</a></li>
+          
+        </ul>
+    </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <router-outlet></router-outlet>

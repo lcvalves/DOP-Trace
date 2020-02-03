@@ -1,8 +1,8 @@
 {
-    "name": "dop-trace",
+    "name": "projeto",
     "author": "Luís Alves 18490 - Tiago Carvalhido 17491",
     "description": "Traceability of DOP/DOC products in their value chain",
-    "version": "0.0.2-deploy.0",
+    "version": "0.0.2",
     "devDependencies": {
         "browserfs": "^1.2.0",
         "chai": "^3.5.0",
@@ -32,5 +32,8 @@
         "prepublish": "mkdirp ./dist && composer archive create  --sourceType dir --sourceName . -a ./dist/unnamed-network.bna",
         "pretest": "npm run lint",
         "test": "mocha --recursive"
+    },
+    "dependencies": {
+        "yeoman-doctor": "^4.0.0"
     }
 }
