@@ -17,18 +17,46 @@ import { DataService } from '../data.service';
 import { Observable } from 'rxjs/Observable';
 import { transactionProductRegistration } from '../org.doptrace';
 import 'rxjs/Rx';
+import { BehaviorSubject, Subject } from 'rxjs/Rx';
+import { FormControl, FormGroup } from '@angular/forms';
+
+
+
+
+
+
 
 // Can be injected into a constructor
 @Injectable()
 export class transactionProductRegistrationService {
 
+  
+
+  todo: Subject<any>
+
+
+
+  
+
   private NAMESPACE = 'transactionProductRegistration';
 
   constructor(private dataService: DataService<transactionProductRegistration>) {
+
+    this.todo = new Subject<any>()
+  
   };
 
+  setTodo(t: string){
+    this.todo.next(t)
+}
+
+  
+  
+
   public getAll(): Observable<transactionProductRegistration[]> {
+      
       return this.dataService.getAll(this.NAMESPACE);
+      
   }
 
   public getTransaction(id: any): Observable<transactionProductRegistration> {

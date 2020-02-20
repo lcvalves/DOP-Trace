@@ -32,16 +32,32 @@ export class transactionStorageComponent implements OnInit {
   private currentId;
   private errorMessage;
 
-  storage = new FormControl('', Validators.required);
   transactionId = new FormControl('', Validators.required);
   timestamp = new FormControl('', Validators.required);
+
+  id = new FormControl('', Validators.required);
+  operator = new FormControl('', Validators.required);
+  description = new FormControl('', Validators.required);
+  latitude = new FormControl('', Validators.required);
+  longitude = new FormControl('', Validators.required);
+  dateTime = new FormControl('', Validators.required);
+  worker = new FormControl('', Validators.required);
+  storedBatches = new FormControl('', Validators.required);
 
 
   constructor(private servicetransactionStorage: transactionStorageService, fb: FormBuilder) {
     this.myForm = fb.group({
-      storage: this.storage,
-      transactionId: this.transactionId,
-      timestamp: this.timestamp
+      transactionId : this.transactionId,
+      timestamp: this.timestamp,
+
+      id: this.id,
+      operator:this.operator,
+      description:this.description,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      dateTime: this.dateTime,
+      worker: this.worker,
+      storedBatches:this.storedBatches
     });
   };
 
@@ -98,16 +114,35 @@ export class transactionStorageComponent implements OnInit {
 
   addTransaction(form: any): Promise<any> {
     this.Transaction = {
-      $class: 'org.doptrace.transactionStorage',
-      'storage': this.storage.value,
-      'transactionId': this.transactionId.value,
-      'timestamp': this.timestamp.value
+      $class: "org.doptrace.transactionStorage",
+  "storage": {
+    $class: "org.doptrace.Storage",
+    "operator": "resource:org.doptrace.Industry_Retailer#"+this.operator.value,
+    "storedBatches": [
+      "resource:org.doptrace.Batch#"+this.storedBatches.value
+    ],
+    "id":  Math.floor(Math.random() * 1001),
+    "description": this.description.value,
+    "latitude": 55.379,
+    "longitude": 39.66,
+    "dateTime": "2020-02-04T02:58:54.991Z",
+    "worker": "resource:org.doptrace.Worker#"+this.worker.value
+  },
+    'transactionId':this.transactionId.value,
+    'timestamp':this.timestamp.value
     };
 
     this.myForm.setValue({
-      'storage': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'storedBatches':null,
     });
 
     return this.servicetransactionStorage.addTransaction(this.Transaction)
@@ -115,9 +150,16 @@ export class transactionStorageComponent implements OnInit {
     .then(() => {
       this.errorMessage = null;
       this.myForm.setValue({
-        'storage': null,
-        'transactionId': null,
-        'timestamp': null
+        'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'storedBatches':null,
       });
     })
     .catch((error) => {
@@ -129,46 +171,7 @@ export class transactionStorageComponent implements OnInit {
     });
   }
 
-  updateTransaction(form: any): Promise<any> {
-    this.Transaction = {
-      $class: 'org.doptrace.transactionStorage',
-      'storage': this.storage.value,
-      'timestamp': this.timestamp.value
-    };
-
-    return this.servicetransactionStorage.updateTransaction(form.get('transactionId').value, this.Transaction)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-      this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
-
-  deleteTransaction(): Promise<any> {
-
-    return this.servicetransactionStorage.deleteTransaction(this.currentId)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-        this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
+  
 
   setId(id: any): void {
     this.currentId = id;
@@ -181,16 +184,19 @@ export class transactionStorageComponent implements OnInit {
     .then((result) => {
       this.errorMessage = null;
       const formObject = {
-        'storage': null,
-        'transactionId': null,
-        'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'storedBatches':null,
       };
 
-      if (result.storage) {
-        formObject.storage = result.storage;
-      } else {
-        formObject.storage = null;
-      }
+      
 
       if (result.transactionId) {
         formObject.transactionId = result.transactionId;
@@ -220,9 +226,16 @@ export class transactionStorageComponent implements OnInit {
 
   resetForm(): void {
     this.myForm.setValue({
-      'storage': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'storedBatches':null,
     });
   }
 }

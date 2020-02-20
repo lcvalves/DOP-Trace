@@ -12,10 +12,21 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { BatchService } from './Batch.service';
 import 'rxjs/add/operator/toPromise';
+
+
+import sigma from 'sigma';
+
+
+
+
+
+//
+
+
 
 @Component({
   selector: 'app-batch',
@@ -24,6 +35,19 @@ import 'rxjs/add/operator/toPromise';
   providers: [BatchService]
 })
 export class BatchComponent implements OnInit {
+
+  @Input() public resultGridList : String;
+
+  //-------------------
+
+
+   private sigma:any;
+
+   
+  
+
+ 
+//----------------------
 
   myForm: FormGroup;
 
@@ -58,10 +82,54 @@ export class BatchComponent implements OnInit {
       currentOperator: this.currentOperator,
       product: this.product
     });
+
+
+  }
+
+  
+  private graph = {
+
+    
+
+    nodes: [
+      
+      
+      {id: "n0", label: "org.doptrace.ProductRegistration#1", x: 0, y: 0, size: 3, color: '#008cc2'},
+      {id: "n1", label: "org.doptrace.QualityAssessment#1", x: 3, y: 1, size: 2, color: '#008cc2'},
+      {id: "n2", label: "And a last one", x: 1, y: 3, size: 1, color: '#E57821'}
+    ],
+
+    edges: [
+      {id: "e0", source: "n0", target: "n1", color: '#282c34', type: 'line', size: 0.5},
+      {id: "e1", source: "n1", target: "n2", color: '#282c34', type: 'curve', size: 1},
+      {id: "e2", source: "n2", target: "n0", color: '#FF0000', type: 'line', size: 2}
+    ]
+
+    
   };
+  
 
   ngOnInit(): void {
+
     this.loadAll();
+
+    
+
+    this.sigma = new sigma(
+      {
+        renderer: {
+          container: document.getElementById("sigma-container"),
+          type: 'canvas'
+        },
+        settings: {}
+      }
+    );
+    this.sigma.graph.read(this.graph);
+    this.sigma.refresh();
+    console.log(this.sigma)
+  
+    
+  
   }
 
   loadAll(): Promise<any> {
@@ -112,22 +180,24 @@ export class BatchComponent implements OnInit {
   }
 
      
-  
+  currentDate = new Date()
 
   addAsset(form: any): Promise<any> {
     this.asset = {
-      'id':this.id.value,
+      'id': Math.floor(Math.random() * 1001),
       'amount': this.amount.value,
       'unit': this.unit.value,
-      'creationDate': '2020-02-01T04:08:00.000Z',
-      'expirationDate': '2020-02-01T04:08:00.000Z',
+      'creationDate': this.currentDate,
+      'expirationDate': this.expirationDate.value,
       'state': this.state.value,
       'certificated': this.certificated.value,
-      'previousEvents': [this.previousEvents.value],
+      'previousEvents': [''],
       'previousOperator': this.previousOperator.value,
       'currentOperator': this.currentOperator.value,
-      'product':'resource:org.doptrace.Product#'+this.product.value
+      'product':'resource:org.doptrace.Product#'+ this.product.value
     };
+
+      
 
     this.myForm.setValue({
       'id': null,
@@ -178,7 +248,7 @@ export class BatchComponent implements OnInit {
       $class: 'org.doptrace.Batch',
       'amount': this.amount.value,
       'unit': this.unit.value,
-      'creationDate': this.creationDate.value,
+      'creationDate': this.currentDate,
       'expirationDate': this.expirationDate.value,
       'state': this.state.value,
       'certificated': this.certificated.value,

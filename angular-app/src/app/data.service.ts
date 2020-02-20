@@ -17,6 +17,7 @@ import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class DataService<Type> {
@@ -24,12 +25,29 @@ export class DataService<Type> {
     private actionUrl: string;
     private headers: Headers;
 
+    
+    myMethod$: Observable<any>;
+    private myMethodSubject = new Subject<any>();
+    
+
     constructor(private http: Http) {
         this.actionUrl = '/api/';
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'application/json');
+
+        this.myMethod$ = this.myMethodSubject.asObservable();
+
     }
+
+    myMethod(data) {
+      console.log(data); 
+      this.myMethodSubject.next(data);
+  }
+
+    
+
+    
 
     public getAll(ns: string): Observable<Type[]> {
         console.log('GetAll ' + ns + ' to ' + this.actionUrl + ns);
@@ -86,5 +104,7 @@ export class DataService<Type> {
     private extractData(res: Response): any {
         return res.json();
     }
+
+  
 
 }

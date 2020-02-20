@@ -16,6 +16,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { transactionDiscardService } from './transactionDiscard.service';
 import 'rxjs/add/operator/toPromise';
+import { DataService } from 'app/data.service';
 
 @Component({
   selector: 'app-transactiondiscard',
@@ -32,16 +33,34 @@ export class transactionDiscardComponent implements OnInit {
   private currentId;
   private errorMessage;
 
-  discard = new FormControl('', Validators.required);
   transactionId = new FormControl('', Validators.required);
   timestamp = new FormControl('', Validators.required);
+
+  id = new FormControl('', Validators.required);
+  operator = new FormControl('', Validators.required);
+  description = new FormControl('', Validators.required);
+  latitude = new FormControl('', Validators.required);
+  longitude = new FormControl('', Validators.required);
+  dateTime = new FormControl('', Validators.required);
+  worker = new FormControl('', Validators.required);
+  discardedBatches = new FormControl('', Validators.required);
+  motive = new FormControl('', Validators.required);
 
 
   constructor(private servicetransactionDiscard: transactionDiscardService, fb: FormBuilder) {
     this.myForm = fb.group({
-      discard: this.discard,
-      transactionId: this.transactionId,
-      timestamp: this.timestamp
+      transactionId : this.transactionId,
+      timestamp: this.timestamp,
+
+      id: this.id,
+      operator:this.operator,
+      description:this.description,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      dateTime: this.dateTime,
+      worker: this.worker,
+      discardedBatches:this.discardedBatches,
+      motive:this.motive
     });
   };
 
@@ -95,19 +114,42 @@ export class transactionDiscardComponent implements OnInit {
   hasArrayValue(name: string, value: any): boolean {
     return this[name].value.indexOf(value) !== -1;
   }
+  currentDate = new Date();
 
   addTransaction(form: any): Promise<any> {
     this.Transaction = {
-      $class: 'org.doptrace.transactionDiscard',
-      'discard': this.discard.value,
-      'transactionId': this.transactionId.value,
-      'timestamp': this.timestamp.value
-    };
+      $class: "org.doptrace.transactionDiscard",
+      "discard": {
+        $class: "org.doptrace.Discard",
+        "motive": this.motive.value,
+        "operator": "resource:org.doptrace.Industry_Retailer#"+ this.operator.value,
+        "discardedBatches": [
+          "resource:org.doptrace.Batch#"+this.discardedBatches.value
+        ],
+        "id":  Math.floor(Math.random() * 1001),
+        "description": this.description.value,
+        "latitude": 135.281,
+        "longitude": 49.029,
+        "dateTime": this.currentDate,
+        "worker": "resource:org.doptrace.Worker#"+this.worker.value
+    },
+    'transactionId':this.transactionId.value,
+    'timestamp':this.timestamp.value
+
+  }
 
     this.myForm.setValue({
-      'discard': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'discardedBatches':null,
+      'motive':null
     });
 
     return this.servicetransactionDiscard.addTransaction(this.Transaction)
@@ -115,9 +157,17 @@ export class transactionDiscardComponent implements OnInit {
     .then(() => {
       this.errorMessage = null;
       this.myForm.setValue({
-        'discard': null,
-        'transactionId': null,
-        'timestamp': null
+        'transactionId' : null,
+        'timestamp': null,
+        'id': null,
+        'operator':null,
+        'description':null,
+        'latitude': null,
+        'longitude': null,
+        'dateTime': null,
+        'worker': null,
+        'discardedBatches':null,
+        'motive':null
       });
     })
     .catch((error) => {
@@ -129,46 +179,9 @@ export class transactionDiscardComponent implements OnInit {
     });
   }
 
-  updateTransaction(form: any): Promise<any> {
-    this.Transaction = {
-      $class: 'org.doptrace.transactionDiscard',
-      'discard': this.discard.value,
-      'timestamp': this.timestamp.value
-    };
+  
 
-    return this.servicetransactionDiscard.updateTransaction(form.get('transactionId').value, this.Transaction)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-      this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
-
-  deleteTransaction(): Promise<any> {
-
-    return this.servicetransactionDiscard.deleteTransaction(this.currentId)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-        this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
+  
 
   setId(id: any): void {
     this.currentId = id;
@@ -181,16 +194,20 @@ export class transactionDiscardComponent implements OnInit {
     .then((result) => {
       this.errorMessage = null;
       const formObject = {
-        'discard': null,
-        'transactionId': null,
-        'timestamp': null
+        'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'discardedBatches':null,
+      'motive':null
       };
 
-      if (result.discard) {
-        formObject.discard = result.discard;
-      } else {
-        formObject.discard = null;
-      }
+      
 
       if (result.transactionId) {
         formObject.transactionId = result.transactionId;
@@ -220,9 +237,17 @@ export class transactionDiscardComponent implements OnInit {
 
   resetForm(): void {
     this.myForm.setValue({
-      'discard': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'discardedBatches':null,
+      'motive':null
     });
   }
 }

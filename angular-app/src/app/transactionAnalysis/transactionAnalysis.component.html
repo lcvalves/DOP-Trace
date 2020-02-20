@@ -22,24 +22,30 @@
       <form [formGroup]="myForm">
         <div class="modal-body">
 
+          
+
+          <div class="form-group text-left">
+            <label for="batch">Batch</label>
+                <textarea formControlName="batch" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="operator">Operator</label>
+                <textarea formControlName="operator" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="description">Description</label>
+                <textarea formControlName="description" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="worker">Worker</label>
+                <textarea formControlName="worker" class="form-control" rows="3"></textarea>
+          </div>
 
           
 
-            
-              <div class="form-group text-left">
-                <label for="analysis">analysis</label>
-                
-                    <textarea formControlName="analysis" class="form-control" rows="3"></textarea>
-                
-              </div>
-            
-          
-
-            
-          
-
-            
-          
 
         </div>
         <div class="modal-footer">
@@ -58,7 +64,7 @@
 
   <div class="row">
     <div class="col-md-12">
-        <h1 class="transaction-title" id='transactionName'>transactionAnalysis</h1>
+        <h1 class="transaction-title" id='transactionName'>Analysis</h1>
     </div>
   </div>
   <br>
@@ -71,7 +77,7 @@
           <ul>
             
               
-                <li><span class="attribute"><b>analysis</b></span></li>
+                <li><span class="attribute"><b>Will verify if the batch has the requirements and conditions associated to PDO product </b></span></li>
               
             
               

@@ -22,23 +22,28 @@
       <form [formGroup]="myForm">
         <div class="modal-body">
 
-
           
 
-            
-              <div class="form-group text-left">
-                <label for="storage">storage</label>
-                
-                    <textarea formControlName="storage" class="form-control" rows="3"></textarea>
-                
-              </div>
-            
-          
 
-            
-          
+          <div class="form-group text-left">
+            <label for="storedBatches">Stored Batches</label>
+                <textarea formControlName="storedBatches" class="form-control" rows="3"></textarea>
+          </div>
 
-            
+          <div class="form-group text-left">
+            <label for="operator">Operator</label>
+                <textarea formControlName="operator" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="description">Description</label>
+                <textarea formControlName="description" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="worker">Worker</label>
+                <textarea formControlName="worker" class="form-control" rows="3"></textarea>
+          </div>
           
 
         </div>
@@ -58,7 +63,7 @@
 
   <div class="row">
     <div class="col-md-12">
-        <h1 class="transaction-title" id='transactionName'>transactionStorage</h1>
+        <h1 class="transaction-title" id='transactionName'>Storage</h1>
     </div>
   </div>
   <br>

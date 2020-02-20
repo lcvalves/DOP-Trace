@@ -102,8 +102,8 @@ export class DOP_ProductComponent implements OnInit {
   addAsset(form: any): Promise<any> {
     this.asset = {
       $class: 'org.doptrace.DOP_Product',
-      'regions': this.regions.value,
-      'requirements': this.requirements.value,
+      'regions': [this.regions.value],
+      'requirements': [this.requirements.value],
       'id': this.id.value,
       'name': this.name.value,
       'description': this.description.value
@@ -143,8 +143,8 @@ export class DOP_ProductComponent implements OnInit {
   updateAsset(form: any): Promise<any> {
     this.asset = {
       $class: 'org.doptrace.DOP_Product',
-      'regions': this.regions.value,
-      'requirements': this.requirements.value,
+      'regions': [this.regions.value],
+      'requirements': [this.requirements.value],
       'name': this.name.value,
       'description': this.description.value
     };

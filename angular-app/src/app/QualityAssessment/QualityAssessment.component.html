@@ -16,28 +16,25 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="addAssetModalLabel">Create asset</h4>
+        <h4 class="modal-title" id="addAssetModalLabel">Create Quality Assessement</h4>
           <p class="modal-intro">Enter the required values below.</p>
       </div>
       <form [formGroup]="myForm">
         <div class="modal-body">
 
-
-          
-
             
               <div class="form-group text-left">
-                <label for="amountDowned">amountDowned</label>
+                <label for="amountDowned">Amount Downed</label>
                 
                   <input formControlName="amountDowned" type="number" step='any' class="form-control">
-                
+
               </div>
             
           
 
             
               <div class="form-group text-left">
-                <label for="newBatch">newBatch</label>
+                <label for="newBatch">Batch</label>
                 
                     <textarea formControlName="newBatch" class="form-control" rows="3"></textarea>
                 
@@ -47,7 +44,7 @@
 
             
               <div class="form-group text-left">
-                <label for="operator">operator</label>
+                <label for="operator">Operator</label>
                 
                     <textarea formControlName="operator" class="form-control" rows="3"></textarea>
                 
@@ -57,7 +54,7 @@
 
             
               <div class="form-group text-left">
-                <label for="assessedBatch">assessedBatch</label>
+                <label for="assessedBatch">Batch assessed</label>
                 
                     <textarea formControlName="assessedBatch" class="form-control" rows="3"></textarea>
                 
@@ -67,7 +64,7 @@
 
             
               <div class="form-group text-left">
-                <label for="id">id</label>
+                <label for="id">ID</label>
                 
                   <input formControlName="id" type="text" class="form-control">
                 
@@ -77,7 +74,7 @@
 
             
               <div class="form-group text-left">
-                <label for="description">description</label>
+                <label for="description">Description</label>
                 
                   <input formControlName="description" type="text" class="form-control">
                 
@@ -87,7 +84,7 @@
 
             
               <div class="form-group text-left">
-                <label for="latitude">latitude</label>
+                <label for="latitude">Latitude</label>
                 
                   <input formControlName="latitude" type="number" step='any' class="form-control">
                 
@@ -97,7 +94,7 @@
 
             
               <div class="form-group text-left">
-                <label for="longitude">longitude</label>
+                <label for="longitude">Longitude</label>
                 
                   <input formControlName="longitude" type="number" step='any' class="form-control">
                 
@@ -107,7 +104,7 @@
 
             
               <div class="form-group text-left">
-                <label for="dateTime">dateTime</label>
+                <label for="dateTime">Date & Time</label>
                 
                   <input formControlName="dateTime" type="text" class="form-control">
                 
@@ -117,7 +114,7 @@
 
             
               <div class="form-group text-left">
-                <label for="worker">worker</label>
+                <label for="worker">Worker</label>
                 
                     <textarea formControlName="worker" class="form-control" rows="3"></textarea>
                 
@@ -152,7 +149,7 @@
 
           
             <div class="form-group text-left">
-              <label for="amountDowned">amountDowned</label>
+              <label for="amountDowned">Amount Downed</label>
               
               
                 <input [ngModel]="amountDowned" formControlName="amountDowned" type="number" step='any' class="form-control">
@@ -161,7 +158,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="newBatch">newBatch</label>
+              <label for="newBatch">Batch</label>
               
               
                 
@@ -172,7 +169,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="operator">operator</label>
+              <label for="operator">Operator</label>
               
               
                 
@@ -183,7 +180,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="assessedBatch">assessedBatch</label>
+              <label for="assessedBatch">Batch assessed</label>
               
               
                 
@@ -203,7 +200,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="description">description</label>
+              <label for="description">Description</label>
               
               
                 <input [ngModel]="description"formControlName="description" type="text" class="form-control">
@@ -212,7 +209,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="latitude">latitude</label>
+              <label for="latitude">Latitude</label>
               
               
                 <input [ngModel]="latitude" formControlName="latitude" type="number" step='any' class="form-control">
@@ -221,7 +218,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="longitude">longitude</label>
+              <label for="longitude">Longitude</label>
               
               
                 <input [ngModel]="longitude" formControlName="longitude" type="number" step='any' class="form-control">
@@ -230,7 +227,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="dateTime">dateTime</label>
+              <label for="dateTime">Date & Time</label>
               
               
                 <input [ngModel]="dateTime"formControlName="dateTime" type="text" class="form-control">
@@ -239,7 +236,7 @@
             </div>
           
             <div class="form-group text-left">
-              <label for="worker">worker</label>
+              <label for="worker">Worker</label>
               
               
                 
@@ -320,25 +317,23 @@
         <thead class="thead">
           <tr class="thead-cols">
             
-                <th class="info">amountDowned</th>
+                <th class="info">Amount Downed</th>
             
-                <th class="info">newBatch</th>
+                <th class="info">Operator</th>
             
-                <th class="info">operator</th>
+                <th class="info">Batch assessed</th>
             
-                <th class="info">assessedBatch</th>
+                <th class="info">ID</th>
             
-                <th class="info">id</th>
+                <th class="info">Description</th>
             
-                <th class="info">description</th>
+                <th class="info">Latitude</th>
             
-                <th class="info">latitude</th>
+                <th class="info">Longitude</th>
             
-                <th class="info">longitude</th>
+                <th class="info">DateTime</th>
             
-                <th class="info">dateTime</th>
-            
-                <th class="info">worker</th>
+                <th class="info">Worker</th>
             
               <th class="info-actions">Actions</th>
           </tr>
@@ -349,7 +344,7 @@
             
                 <td class="asset-properties">{{asset.amountDowned}}</td>
             
-                <td class="asset-properties">{{asset.newBatch}}</td>
+               
             
                 <td class="asset-properties">{{asset.operator}}</td>
             

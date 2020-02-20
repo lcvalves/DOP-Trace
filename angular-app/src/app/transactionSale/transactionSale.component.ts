@@ -32,16 +32,67 @@ export class transactionSaleComponent implements OnInit {
   private currentId;
   private errorMessage;
 
-  sale = new FormControl('', Validators.required);
   transactionId = new FormControl('', Validators.required);
   timestamp = new FormControl('', Validators.required);
+
+  id = new FormControl('', Validators.required);
+  operator = new FormControl('', Validators.required);
+  description = new FormControl('', Validators.required);
+  latitude = new FormControl('', Validators.required);
+  longitude = new FormControl('', Validators.required);
+  dateTime = new FormControl('', Validators.required);
+  worker = new FormControl('', Validators.required);
+  soldBatches = new FormControl('', Validators.required);
+  amountPerBatch = new FormControl('', Validators.required);
+  salePrice = new FormControl('', Validators.required);
+  seller = new FormControl('', Validators.required);
+  buyer = new FormControl('', Validators.required);
+
+  //Batch Stuff
+  batchId = new FormControl('', Validators.required);
+  batchAmount= new FormControl('', Validators.required);
+  batchUnit= new FormControl('', Validators.required);
+  batchCreation = new FormControl('', Validators.required);
+  batchExp = new FormControl('', Validators.required);
+  batchState = new FormControl('', Validators.required);
+  batchCert = new FormControl('', Validators.required);
+  batchPrevEven = new FormControl('', Validators.required);
+  batchPrevOp = new FormControl('', Validators.required);
+  batchCurrOp = new FormControl('', Validators.required);
+  batchProduct = new FormControl('', Validators.required);
+  //
 
 
   constructor(private servicetransactionSale: transactionSaleService, fb: FormBuilder) {
     this.myForm = fb.group({
-      sale: this.sale,
-      transactionId: this.transactionId,
-      timestamp: this.timestamp
+      transactionId : this.transactionId,
+      timestamp: this.timestamp,
+
+      id: this.id,
+      operator:this.operator,
+      description:this.description,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      dateTime: this.dateTime,
+      worker: this.worker,
+      soldBatches: this.soldBatches,
+      amountPerBatch:this.amountPerBatch,
+      salePrice: this.salePrice,
+      seller : this.seller,
+      buyer:this.buyer,
+
+      //Batch Stuff
+      batchId: this.batchId,
+      batchAmount:this.batchAmount,
+      batchUnit:this.batchUnit,
+      batchCreation: this.batchCreation,
+      batchExp:this.batchExp,
+      batchState:this.batchState,
+      batchCert:this.batchCert,
+      batchPrevEven:this.batchPrevEven,
+      batchPrevOp:this.batchPrevOp,
+      batchCurrOp:this.batchCurrOp,
+      batchProduct:this.batchProduct
     });
   };
 
@@ -96,18 +147,79 @@ export class transactionSaleComponent implements OnInit {
     return this[name].value.indexOf(value) !== -1;
   }
 
+  now = new Date();
+
   addTransaction(form: any): Promise<any> {
     this.Transaction = {
-      $class: 'org.doptrace.transactionSale',
-      'sale': this.sale.value,
-      'transactionId': this.transactionId.value,
-      'timestamp': this.timestamp.value
-    };
+      "$class": "org.doptrace.transactionSale",
+    "sale": {
+    "$class": "org.doptrace.Sale",
+    "salePrice": [
+      this.salePrice.value
+    ],
+    "newBatch": {
+      "$class": "org.doptrace.Batch",
+      "id": Math.floor(Math.random() * 1001),
+      "amount": 24.125,
+      "unit": "L",
+      "creationDate": "2020-02-10T07:34:42.052Z",
+      "expirationDate": "2020-03-10T07:34:42.052Z",
+      "state": "IN_TRANSIT",
+      "certificated": false,
+      "previousEvents": [
+        "resource:org.doptrace.ProductRegistration#7646"
+      ],
+      "previousOperator": "resource:org.doptrace.Producer#8865",
+      "currentOperator": "resource:org.doptrace.Producer#7359",
+      "product": "resource:org.doptrace.Product#0005"
+    },
+    "seller": "resource:org.doptrace.Industry_Retailer#"+this.seller.value,
+    "buyer": "resource:org.doptrace.Industry_Retailer#"+this.buyer.value,
+    "amountPerBatch": [
+      this.amountPerBatch.value
+    ],
+    "soldBatches": [
+      "resource:org.doptrace.Batch#"+this.soldBatches.value
+    ],
+    "id": Math.floor(Math.random() * 1001),
+    "description": this.description.value,
+    "latitude": 143.104,
+    "longitude": 240.12,
+    "dateTime": this.now,
+    "worker": "resource:org.doptrace.Worker#"+this.worker.value
+  },
+  "transactionId": this.transactionId.value,
+    "timestamp": this.timestamp.value
+    }
 
     this.myForm.setValue({
-      'sale': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'soldBatches':null,
+      'amountPerBatch':null,
+      'salePrice':null,
+      'buyer':null,
+      'seller':null,
+
+      //Batch Stuff
+      'batchId':null ,
+      'batchUnit':null,
+      'batchAmount':null,
+      'batchCreation': null,
+      'batchExp':null,
+      'batchState':null,
+      'batchCert':null,
+      'batchPrevEven':null,
+      'batchPrevOp':null,
+      'batchCurrOp':null,
+      'batchProduct':null
     });
 
     return this.servicetransactionSale.addTransaction(this.Transaction)
@@ -115,9 +227,33 @@ export class transactionSaleComponent implements OnInit {
     .then(() => {
       this.errorMessage = null;
       this.myForm.setValue({
-        'sale': null,
-        'transactionId': null,
-        'timestamp': null
+        'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'soldBatches':null,
+      'amountPerBatch':null,
+      'salePrice':null,
+      'buyer':null,
+      'seller':null,
+
+      //Batch Stuff
+      'batchId':null ,
+      'batchUnit':null,
+      'batchAmount':null,
+      'batchCreation': null,
+      'batchExp':null,
+      'batchState':null,
+      'batchCert':null,
+      'batchPrevEven':null,
+      'batchPrevOp':null,
+      'batchCurrOp':null,
+      'batchProduct':null
       });
     })
     .catch((error) => {
@@ -129,47 +265,7 @@ export class transactionSaleComponent implements OnInit {
     });
   }
 
-  updateTransaction(form: any): Promise<any> {
-    this.Transaction = {
-      $class: 'org.doptrace.transactionSale',
-      'sale': this.sale.value,
-      'timestamp': this.timestamp.value
-    };
-
-    return this.servicetransactionSale.updateTransaction(form.get('transactionId').value, this.Transaction)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-      this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
-
-  deleteTransaction(): Promise<any> {
-
-    return this.servicetransactionSale.deleteTransaction(this.currentId)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-        this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
-
+  
   setId(id: any): void {
     this.currentId = id;
   }
@@ -181,16 +277,36 @@ export class transactionSaleComponent implements OnInit {
     .then((result) => {
       this.errorMessage = null;
       const formObject = {
-        'sale': null,
-        'transactionId': null,
-        'timestamp': null
+        'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'soldBatches':null,
+      'amountPerBatch':null,
+      'salePrice':null,
+      'buyer':null,
+      'seller':null,
+
+      //Batch Stuff
+      'batchId':null ,
+      'batchUnit':null,
+      'batchAmount':null,
+      'batchCreation': null,
+      'batchExp':null,
+      'batchState':null,
+      'batchCert':null,
+      'batchPrevEven':null,
+      'batchPrevOp':null,
+      'batchCurrOp':null,
+      'batchProduct':null
       };
 
-      if (result.sale) {
-        formObject.sale = result.sale;
-      } else {
-        formObject.sale = null;
-      }
+      
 
       if (result.transactionId) {
         formObject.transactionId = result.transactionId;
@@ -220,9 +336,33 @@ export class transactionSaleComponent implements OnInit {
 
   resetForm(): void {
     this.myForm.setValue({
-      'sale': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'soldBatches':null,
+      'amountPerBatch':null,
+      'salePrice':null,
+      'buyer':null,
+      'seller':null,
+
+      //Batch Stuff
+      'batchId':null ,
+      'batchUnit':null,
+      'batchAmount':null,
+      'batchCreation': null,
+      'batchExp':null,
+      'batchState':null,
+      'batchCert':null,
+      'batchPrevEven':null,
+      'batchPrevOp':null,
+      'batchCurrOp':null,
+      'batchProduct':null
     });
   }
 }

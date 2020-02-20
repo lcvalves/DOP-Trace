@@ -22,24 +22,40 @@
       <form [formGroup]="myForm">
         <div class="modal-body">
 
+          <div class="form-group text-left">
+            <label for="processes">Processes</label> 
+                <textarea formControlName="processes" class="form-control" rows="3"></textarea>
+          </div>
 
-          
 
-            
-              <div class="form-group text-left">
-                <label for="transformation">transformation</label>
-                
-                    <textarea formControlName="transformation" class="form-control" rows="3"></textarea>
-                
-              </div>
-            
-          
+          <div class="form-group text-left">
+            <label for="usedBatches">Used Batches</label> 
+                <textarea formControlName="usedBatches" class="form-control" rows="3"></textarea>
+          </div>
 
-            
-          
+          <div class="form-group text-left">
+            <label for="amountPerBatch">Amount Batches used</label> 
+                <textarea formControlName="amountPerBatch" class="form-control" rows="3"></textarea>
+          </div>
 
-            
-          
+
+          <div class="form-group text-left">
+            <label for="operator">Operator</label>
+                <textarea formControlName="operator" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="description">Description</label>
+                <textarea formControlName="description" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="worker">Worker</label>
+                <textarea formControlName="worker" class="form-control" rows="3"></textarea>
+          </div>
+
+         
+        
 
         </div>
         <div class="modal-footer">
@@ -58,7 +74,7 @@
 
   <div class="row">
     <div class="col-md-12">
-        <h1 class="transaction-title" id='transactionName'>transactionTransformation</h1>
+        <h1 class="transaction-title" id='transactionName'>Transformation</h1>
     </div>
   </div>
   <br>
@@ -71,7 +87,7 @@
           <ul>
             
               
-                <li><span class="attribute"><b>transformation</b></span></li>
+                <li><span class="attribute"><b>Will make a junction of different products to create a new Batch</b></span></li>
               
             
               

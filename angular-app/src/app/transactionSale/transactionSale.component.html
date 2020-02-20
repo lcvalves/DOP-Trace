@@ -23,25 +23,50 @@
         <div class="modal-body">
 
 
+          <div class="form-group text-left">
+            <label for="salePrice">Sale Price</label> 
+                <textarea formControlName="salePrice" class="form-control" rows="3"></textarea>
+          </div>
+
+
+          <div class="form-group text-left">
+            <label for="soldBatches">Sold Batches</label> 
+                <textarea formControlName="soldBatches" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="seller">Seller</label> 
+                <textarea formControlName="seller" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="buyer">Buyer</label> 
+                <textarea formControlName="buyer" class="form-control" rows="3"></textarea>
+          </div>
+
+
+          <div class="form-group text-left">
+            <label for="amountPerBatch">Amount Batches</label> 
+                <textarea formControlName="amountPerBatch" class="form-control" rows="3"></textarea>
+          </div>
+
+
           
 
-            
-              <div class="form-group text-left">
-                <label for="sale">sale</label>
-                
-                    <textarea formControlName="sale" class="form-control" rows="3"></textarea>
-                
-              </div>
-            
-          
+          <div class="form-group text-left">
+            <label for="description">Description</label>
+                <textarea formControlName="description" class="form-control" rows="3"></textarea>
+          </div>
 
-            
-          
+          <div class="form-group text-left">
+            <label for="worker">Worker</label>
+                <textarea formControlName="worker" class="form-control" rows="3"></textarea>
+          </div>
 
-            
           
-
+            
         </div>
+
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             <button (click)="addTransaction(myForm);" type="submit" class="btn btn-success" data-dismiss="modal">Confirm</button>
@@ -58,7 +83,7 @@
 
   <div class="row">
     <div class="col-md-12">
-        <h1 class="transaction-title" id='transactionName'>transactionSale</h1>
+        <h1 class="transaction-title" id='transactionName'>Sale</h1>
     </div>
   </div>
   <br>
@@ -69,15 +94,7 @@
           When invoked, this transaction will have the following attributes:
           <br>
           <ul>
-            
-              
-                <li><span class="attribute"><b>sale</b></span></li>
-              
-            
-              
-            
-              
-            
+                <li><span class="attribute"><b>Will make a transaction between seller and buyer </b></span></li>
           </ul>
         </div>
       </div>

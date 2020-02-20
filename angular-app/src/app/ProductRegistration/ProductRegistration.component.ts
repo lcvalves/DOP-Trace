@@ -17,11 +17,19 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { ProductRegistrationService } from './ProductRegistration.service';
 import 'rxjs/add/operator/toPromise';
 
+import {DataService} from "../data.service";
+
+
+
+ 
+
+
+
 @Component({
   selector: 'app-productregistration',
   templateUrl: './ProductRegistration.component.html',
   styleUrls: ['./ProductRegistration.component.css'],
-  providers: [ProductRegistrationService]
+  providers: [ProductRegistrationService,DataService]
 })
 export class ProductRegistrationComponent implements OnInit {
 
@@ -41,7 +49,10 @@ export class ProductRegistrationComponent implements OnInit {
   dateTime = new FormControl('', Validators.required);
   worker = new FormControl('', Validators.required);
 
-  constructor(public serviceProductRegistration: ProductRegistrationService, fb: FormBuilder) {
+  message: string;
+  
+
+  constructor(public serviceProductRegistration: ProductRegistrationService, fb: FormBuilder, private dataService: DataService<any>) {
     this.myForm = fb.group({
       batchId: this.batchId,
       operator: this.operator,
@@ -52,11 +63,22 @@ export class ProductRegistrationComponent implements OnInit {
       dateTime: this.dateTime,
       worker: this.worker
     });
+
+  
   };
+
+  
 
   ngOnInit(): void {
     this.loadAll();
+
+    this.dataService.myMethod$.subscribe((data) => {
+      this.message= data; 
+    });
+    
+    console.log(this.message);
   }
+  
 
   loadAll(): Promise<any> {
     const tempList = [];
@@ -107,21 +129,33 @@ export class ProductRegistrationComponent implements OnInit {
 
   addAsset(form: any): Promise<any> {
     this.asset = {
-      $class: 'org.doptrace.ProductRegistration',
-
-      'newBatch':{
-        $class:'org.doptrace.Batch',
-        'id': this.batchId.value,
+      $class: "org.doptrace.ProductRegistration",
+      "newBatch": {
+        $class: "org.doptrace.Batch",
+        "id": "189",
+        "amount": 178.271,
+        "unit": "KG",
+        "creationDate": "2020-02-10T01:56:55.226Z",
+        "expirationDate": "2020-02-10T01:56:55.226Z",
+        "state": "REGISTERED",
+        "certificated": false,
+        "previousEvents": [
+          "resource:org.doptrace.ProductRegistration#1997"
+        ],
+        "previousOperator": "resource:org.doptrace.Producer#3434",
+        "currentOperator": "resource:org.doptrace.Producer#2183",
+        "product": "resource:org.doptrace.Product#3935"
       },
-
-      'operator': this.operator.value,
-      'id': this.id.value,
-      'description': this.description.value,
-      'latitude': this.latitude.value,
-      'longitude': this.longitude.value,
-      'dateTime': this.dateTime.value,
-      'worker': this.worker.value
+      "operator": "resource:org.doptrace.Producer#3887",
+      "id": "9119",
+      "description": "Ea.",
+      "latitude": 138.676,
+      "longitude": 40.339,
+      "dateTime": "2020-02-10T01:56:53.943Z",
+      "worker": "resource:org.doptrace.Worker#"+ this.worker.value
     };
+
+    console.log(this.asset.newBatch.id);
 
     this.myForm.setValue({
       'batchId': null,
@@ -166,7 +200,7 @@ export class ProductRegistrationComponent implements OnInit {
 
       'newBatch':{
         $class:'org.doptrace.Batch',
-        'id': this.batchId.value,
+       // 'id': this.batchId.value,
       },
 
       'operator': this.operator.value,
@@ -299,7 +333,7 @@ export class ProductRegistrationComponent implements OnInit {
 
   resetForm(): void {
     this.myForm.setValue({
-      'newBatch': null,
+      'batchId': null,
       'operator': null,
       'id': null,
       'description': null,

@@ -12,19 +12,25 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { transactionProductRegistrationService } from './transactionProductRegistration.service';
 import 'rxjs/add/operator/toPromise';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
+
+import {DataService} from "../data.service"
+
+
 
 @Component({
   selector: 'app-transactionproductregistration',
   templateUrl: './transactionProductRegistration.component.html',
   styleUrls: ['./transactionProductRegistration.component.css'],
-  providers: [transactionProductRegistrationService]
+  providers: [transactionProductRegistrationService,DataService]
 })
 export class transactionProductRegistrationComponent implements OnInit {
 
+  
   myForm: FormGroup;
 
   private allTransactions;
@@ -58,10 +64,10 @@ export class transactionProductRegistrationComponent implements OnInit {
   //
 
 
+  
 
 
-
-  constructor(private servicetransactionProductRegistration: transactionProductRegistrationService, fb: FormBuilder) {
+  constructor(private servicetransactionProductRegistration: transactionProductRegistrationService, fb: FormBuilder ) {
     this.myForm = fb.group({
 
       transactionId : this.transactionId,
@@ -89,12 +95,25 @@ export class transactionProductRegistrationComponent implements OnInit {
       batchProduct:this.batchProduct
 
     });
+
+    
+    
+
+    
+    
+   
+
   };
+
 
   ngOnInit(): void {
     this.loadAll();
+
+    
+    
   }
 
+  
   loadAll(): Promise<any> {
     const tempList = [];
     return this.servicetransactionProductRegistration.getAll()
@@ -142,6 +161,12 @@ export class transactionProductRegistrationComponent implements OnInit {
     return this[name].value.indexOf(value) !== -1;
   }
 
+   currentDate = new Date();
+
+
+   
+   
+
   addTransaction(form: any): Promise<any> {
     this.Transaction = {
       $class: "org.doptrace.transactionProductRegistration",
@@ -149,31 +174,40 @@ export class transactionProductRegistrationComponent implements OnInit {
       $class: "org.doptrace.ProductRegistration",
       "newBatch": {
         $class: "org.doptrace.Batch",
-        "id": 'ola',//this.batchId.value,
-        "amount": 10,
-        "unit": 'KG',
-        "creationDate": '2020-02-02T02:00:51.685Z',
-        "expirationDate": '2020-05-02T02:00:51.685Z',
+        "id": Math.floor(Math.random() * 1001),
+        "amount": this.batchAmount.value,
+        "unit": this.batchUnit.value,
+        "creationDate": this.currentDate,
+        "expirationDate": this.batchExp.value,
         "state": 'REGISTERED',
         "certificated": false,
-        "previousEvents": ['resource:org.doptrace.ProductRegistration#4424'],
-        "previousOperator": this.batchPrevOp.value,
-        "currentOperator": 'resource:org.doptrace.Producer#PROD_001',
-        "product":'resource:org.doptrace.Product#1',
+        "previousEvents": [],
+        "previousOperator": null,
+        "currentOperator": this.operator.value,
+        "product":'resource:org.doptrace.Product#'+this.batchProduct.value,
       },
-      "operator":'resource:org.doptrace.Producer#PROD_001',
-      "id":'PROD_REG3',
-      "description": 'THIS IS PROD REGISTRY 3',
+      "operator":'resource:org.doptrace.Producer#'+this.operator.value,
+      "id": Math.floor(Math.random() * 1001),
+      "description": this.description.value,
       "latitude": 10,
       "longitude": 10,
-      "dateTime": '2020-02-02T02:00:51.685Z',
+      "dateTime": this.currentDate,
 
-      "worker": 'resource:org.doptrace.Worker#joselima',
+      "worker": 'resource:org.doptrace.Worker#'+this.worker.value,
     },
     "transactionId": this.transactionId.value,
     "timestamp": this.timestamp.value
+
   };
 
+
+    this.servicetransactionProductRegistration.setTodo(this.batchExp.value);
+
+  
+
+  
+
+  
     this.myForm.setValue({
       
       'transactionId' : null,
@@ -199,6 +233,8 @@ export class transactionProductRegistrationComponent implements OnInit {
       'batchCurrOp':null,
       'batchProduct':null
     });
+    
+    
 
     return this.servicetransactionProductRegistration.addTransaction(this.Transaction)
     .toPromise()
@@ -237,7 +273,11 @@ export class transactionProductRegistrationComponent implements OnInit {
         this.errorMessage = error;
       }
     });
+
+    
   }
+
+  
 
   
   setId(id: any): void {
@@ -282,6 +322,12 @@ export class transactionProductRegistrationComponent implements OnInit {
         formObject.transactionId = result.transactionId;
       } else {
         formObject.transactionId = null;
+      }
+
+      if(result.productRegistration.newBatch.id){
+        formObject.batchId = result.productRegistration.newBatch.id;
+      }else{
+        formObject.batchId = null;
       }
 
       if (result.timestamp) {
