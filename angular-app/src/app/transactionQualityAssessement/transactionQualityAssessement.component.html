@@ -22,24 +22,34 @@
       <form [formGroup]="myForm">
         <div class="modal-body">
 
+          <div class="form-group text-left">
+            <label for="amountDowned">Amount Down</label> 
+                <textarea formControlName="amountDowned" class="form-control" rows="3"></textarea>
+          </div>
 
-          
 
-            
-              <div class="form-group text-left">
-                <label for="quality">quality</label>
-                
-                    <textarea formControlName="quality" class="form-control" rows="3"></textarea>
-                
-              </div>
-            
-          
+          <div class="form-group text-left">
+            <label for="assessedBatch">Batch Assessed (ID)</label> 
+                <textarea formControlName="assessedBatch" class="form-control" rows="3"></textarea>
+          </div>
 
-            
-          
 
-            
-          
+          <div class="form-group text-left">
+            <label for="operator">Operator</label>
+                <textarea formControlName="operator" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="description">Description</label>
+                <textarea formControlName="description" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group text-left">
+            <label for="worker">Worker</label>
+                <textarea formControlName="worker" class="form-control" rows="3"></textarea>
+          </div>
+
+ 
 
         </div>
         <div class="modal-footer">
@@ -58,7 +68,7 @@
 
   <div class="row">
     <div class="col-md-12">
-        <h1 class="transaction-title" id='transactionName'>transactionQualityAssessement</h1>
+        <h1 class="transaction-title" id='transactionName'>Quality Assessement</h1>
     </div>
   </div>
   <br>
@@ -69,15 +79,9 @@
           When invoked, this transaction will have the following attributes:
           <br>
           <ul>
-            
-              
-                <li><span class="attribute"><b>quality</b></span></li>
-              
-            
-              
-            
-              
-            
+            <li><span class="attribute"><b>The creation of a new Batch with the same atribbutes of the assessed Batch, only with the difference between the batch amount and amount downed.</b></span></li>
+           
+            <li><span class="attribute"><b>The creation of a new registry for Quality Assessement.</b></span></li>    
           </ul>
         </div>
       </div>

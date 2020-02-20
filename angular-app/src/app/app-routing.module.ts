@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
@@ -46,6 +46,9 @@ import { transactionTransportComponent } from './transactionTransport/transactio
 import { transactionAnalysisComponent } from './transactionAnalysis/transactionAnalysis.component';
 import { transactionDiscardComponent } from './transactionDiscard/transactionDiscard.component';
 import { setupDemoComponent } from './setupDemo/setupDemo.component';
+//------
+import { RegisterComponent } from './Register/Register.component';
+
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -76,7 +79,12 @@ const routes: Routes = [
   { path: 'transactionAnalysis', component: transactionAnalysisComponent },
   { path: 'transactionDiscard', component: transactionDiscardComponent },
   { path: 'setupDemo', component: setupDemoComponent },
-  { path: '**', redirectTo: '' }
+
+  { path: 'Register', component: RegisterComponent },
+
+  { path: '**', redirectTo: '' },
+
+
 ];
 
 @NgModule({

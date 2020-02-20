@@ -21,6 +21,11 @@ import { DataService } from './data.service';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 
+import { HttpClientModule } from '@angular/common/http';
+
+import{transactionProductRegistrationService} from "../app/transactionProductRegistration/transactionProductRegistration.service"
+
+
 import { ProducerComponent } from './Producer/Producer.component';
 import { Industry_RetailerComponent } from './Industry_Retailer/Industry_Retailer.component';
 import { LogisticsComponent } from './Logistics/Logistics.component';
@@ -51,48 +56,61 @@ import { transactionAnalysisComponent } from './transactionAnalysis/transactionA
 import { transactionDiscardComponent } from './transactionDiscard/transactionDiscard.component';
 import { setupDemoComponent } from './setupDemo/setupDemo.component';
 
+import { RegisterComponent } from './Register/Register.component';
+import { HttpHandler } from '@angular/common/http';
+
+
+
+import {FilterAssetPipe} from './Batch/FilterAsset.pipe';
+
   @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    ProducerComponent,
-    Industry_RetailerComponent,
-    LogisticsComponent,
-    CertificationEntityComponent,
-    ProductRegistrationComponent,
-    QualityAssessmentComponent,
-    TransformationComponent,
-    StorageComponent,
-    SaleComponent,
-    TransportComponent,
-    AnalysisComponent,
-    DiscardComponent,
-    BatchComponent,
-    ProductComponent,
-    DOP_ProductComponent,
-    SysAdminComponent,
-    WorkerComponent,
-    WorkerAdminComponent,
-    transactionProductRegistrationComponent,
-    transactionQualityAssessementComponent,
-    transactionTransformationComponent,
-    transactionStorageComponent,
-    transactionSaleComponent,
-    transactionTransportComponent,
-    transactionAnalysisComponent,
-    transactionDiscardComponent,
-    setupDemoComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpModule,
-    AppRoutingModule
-  ],
-  providers: [
-    DataService
-  ],
-  bootstrap: [AppComponent]
+   declarations: [
+      AppComponent,
+      HomeComponent,
+      ProducerComponent,
+      Industry_RetailerComponent,
+      LogisticsComponent,
+      CertificationEntityComponent,
+      ProductRegistrationComponent,
+      QualityAssessmentComponent,
+      TransformationComponent,
+      StorageComponent,
+      SaleComponent,
+      TransportComponent,
+      AnalysisComponent,
+      DiscardComponent,
+      BatchComponent,
+      ProductComponent,
+      DOP_ProductComponent,
+      SysAdminComponent,
+      WorkerComponent,
+      WorkerAdminComponent,
+      transactionProductRegistrationComponent,
+      transactionQualityAssessementComponent,
+      transactionTransformationComponent,
+      transactionStorageComponent,
+      transactionSaleComponent,
+      transactionTransportComponent,
+      transactionAnalysisComponent,
+      transactionDiscardComponent,
+      setupDemoComponent,
+      RegisterComponent,
+      FilterAssetPipe
+   ],
+   imports: [
+      BrowserModule,
+      FormsModule,
+      ReactiveFormsModule,
+      HttpModule,
+      AppRoutingModule,
+      HttpClientModule
+   ],
+   providers: [
+      DataService,
+      transactionProductRegistrationService
+   ],
+   bootstrap: [
+      AppComponent
+   ]
 })
 export class AppModule { }

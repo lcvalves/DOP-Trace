@@ -245,8 +245,8 @@ export class QualityAssessmentComponent implements OnInit {
         formObject.amountDowned = null;
       }
 
-      if (result.newBatch) {
-        formObject.newBatch = result.newBatch;
+      if (result.newBatch.id) {
+        formObject.newBatch = result.newBatch.id;
       } else {
         formObject.newBatch = null;
       }

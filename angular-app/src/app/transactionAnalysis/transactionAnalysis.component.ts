@@ -32,16 +32,34 @@ export class transactionAnalysisComponent implements OnInit {
   private currentId;
   private errorMessage;
 
-  analysis = new FormControl('', Validators.required);
   transactionId = new FormControl('', Validators.required);
   timestamp = new FormControl('', Validators.required);
 
+  id = new FormControl('', Validators.required);
+  operator = new FormControl('', Validators.required);
+  description = new FormControl('', Validators.required);
+  latitude = new FormControl('', Validators.required);
+  longitude = new FormControl('', Validators.required);
+  dateTime = new FormControl('', Validators.required);
+  worker = new FormControl('', Validators.required);
+  batch = new FormControl('', Validators.required);
+  certificated = new FormControl('', Validators.required);
 
   constructor(private servicetransactionAnalysis: transactionAnalysisService, fb: FormBuilder) {
     this.myForm = fb.group({
-      analysis: this.analysis,
-      transactionId: this.transactionId,
-      timestamp: this.timestamp
+      transactionId : this.transactionId,
+      timestamp: this.timestamp,
+
+      id: this.id,
+      operator:this.operator,
+      description:this.description,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      dateTime: this.dateTime,
+      worker: this.worker,
+      batch:this.batch,
+      certificated:this.certificated
+
     });
   };
 
@@ -95,19 +113,41 @@ export class transactionAnalysisComponent implements OnInit {
   hasArrayValue(name: string, value: any): boolean {
     return this[name].value.indexOf(value) !== -1;
   }
+  now = new Date();
 
   addTransaction(form: any): Promise<any> {
     this.Transaction = {
-      $class: 'org.doptrace.transactionAnalysis',
-      'analysis': this.analysis.value,
-      'transactionId': this.transactionId.value,
-      'timestamp': this.timestamp.value
+      $class: "org.doptrace.transactionAnalysis",
+    "analysis": {
+      $class: "org.doptrace.Analysis",
+    "certificated": true,
+    "operator": "resource:org.doptrace.CertificationEntity#"+ this.operator.value,
+    "batch": "resource:org.doptrace.Batch#"+this.batch.value,
+    "id": Math.floor(Math.random() * 1001),
+    "description": this.description.value,
+    "latitude": 139.769,
+    "longitude": 183.921,
+    "dateTime": this.now,
+    "worker": "resource:org.doptrace.Worker#"+this.worker.value
+  },
+  'transactionId':this.transactionId.value,
+  'timestamp':this.timestamp.value
+
     };
 
     this.myForm.setValue({
-      'analysis': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'batch':null,
+      'certificated':null
+
     });
 
     return this.servicetransactionAnalysis.addTransaction(this.Transaction)
@@ -115,9 +155,17 @@ export class transactionAnalysisComponent implements OnInit {
     .then(() => {
       this.errorMessage = null;
       this.myForm.setValue({
-        'analysis': null,
-        'transactionId': null,
-        'timestamp': null
+        'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'batch':null,
+      'certificated':null
       });
     })
     .catch((error) => {
@@ -129,46 +177,8 @@ export class transactionAnalysisComponent implements OnInit {
     });
   }
 
-  updateTransaction(form: any): Promise<any> {
-    this.Transaction = {
-      $class: 'org.doptrace.transactionAnalysis',
-      'analysis': this.analysis.value,
-      'timestamp': this.timestamp.value
-    };
+  
 
-    return this.servicetransactionAnalysis.updateTransaction(form.get('transactionId').value, this.Transaction)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-      this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
-
-  deleteTransaction(): Promise<any> {
-
-    return this.servicetransactionAnalysis.deleteTransaction(this.currentId)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-        this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
 
   setId(id: any): void {
     this.currentId = id;
@@ -181,16 +191,20 @@ export class transactionAnalysisComponent implements OnInit {
     .then((result) => {
       this.errorMessage = null;
       const formObject = {
-        'analysis': null,
-        'transactionId': null,
-        'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'batch':null,
+      'certificated':null
       };
 
-      if (result.analysis) {
-        formObject.analysis = result.analysis;
-      } else {
-        formObject.analysis = null;
-      }
+      
 
       if (result.transactionId) {
         formObject.transactionId = result.transactionId;
@@ -220,9 +234,17 @@ export class transactionAnalysisComponent implements OnInit {
 
   resetForm(): void {
     this.myForm.setValue({
-      'analysis': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'batch':null,
+      'certificated':null
     });
   }
 }

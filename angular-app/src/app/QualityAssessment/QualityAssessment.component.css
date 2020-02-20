@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 .container {
-    width: 100%;
+    width: max-content;
     padding-left: 72px;
     padding-right: 72px;
 }
@@ -154,7 +154,7 @@ label {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+    max-width: fit-content;
 }
 .plus-svg{
     color: #fff;

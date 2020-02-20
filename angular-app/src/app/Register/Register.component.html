@@ -1,0 +1,100 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+
+<!--The content below is only a placeholder and can be replaced.-->
+
+
+<section >
+  <a href="http://localhost:3000/auth/github">Sign in with github</a>
+</section>
+<section >
+  <h2>Sign up</h2>
+  <form (ngSubmit)="onSignUp()" #signupForm="ngForm">
+    <table>
+      
+      <tr>
+        <td>
+          <label>Username</label>
+        </td>
+        <td>
+          <input  type="text" [(ngModel)]="signUp.username" #username="ngModel" name="username">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Password</label>
+        </td>
+        <td>
+          <input type="password" [(ngModel)]="signUp.password" #password="ngModel" name="password">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Operator</label>
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="signUp.operator" #operator="ngModel" name="operator">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Firstname</label>
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="signUp.firstname" #firstname="ngModel" name="firstname">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Lastname</label>
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="signUp.lastname" #lastname="ngModel" name="lastname">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Phone Number</label>
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="signUp.phoneNumber" #phoneNumber="ngModel" name="phoneNumber">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Email</label>
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="signUp.email" #email="ngModel" name="email">
+        </td>
+      </tr>
+    </table>
+    <button type="submit"
+            class="primary">
+      <div *ngIf="!signUpInProgress">
+        <span>Sign up</span>
+      </div>
+      <div *ngIf="signUpInProgress" class="ibm-spinner-indeterminate small loop">
+        <div class="loader">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="circle-path" cx="50" cy="50" r="20"/>
+          </svg>
+        </div>
+      </div>
+    </button>
+  </form>
+</section>
+
+

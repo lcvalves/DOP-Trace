@@ -32,16 +32,34 @@ export class transactionTransportComponent implements OnInit {
   private currentId;
   private errorMessage;
 
-  transport = new FormControl('', Validators.required);
   transactionId = new FormControl('', Validators.required);
   timestamp = new FormControl('', Validators.required);
+
+  id = new FormControl('', Validators.required);
+  operator = new FormControl('', Validators.required);
+  description = new FormControl('', Validators.required);
+  latitude = new FormControl('', Validators.required);
+  longitude = new FormControl('', Validators.required);
+  dateTime = new FormControl('', Validators.required);
+  worker = new FormControl('', Validators.required);
+  transportedBatches = new FormControl('', Validators.required);
+  destinationAdress = new FormControl('', Validators.required);
 
 
   constructor(private servicetransactionTransport: transactionTransportService, fb: FormBuilder) {
     this.myForm = fb.group({
-      transport: this.transport,
-      transactionId: this.transactionId,
-      timestamp: this.timestamp
+      transactionId : this.transactionId,
+      timestamp: this.timestamp,
+
+      id: this.id,
+      operator:this.operator,
+      description:this.description,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      dateTime: this.dateTime,
+      worker: this.worker,
+      transportedBatches:this.transportedBatches,
+      destinationAdress:this.destinationAdress
     });
   };
 
@@ -96,18 +114,42 @@ export class transactionTransportComponent implements OnInit {
     return this[name].value.indexOf(value) !== -1;
   }
 
+  now = new Date();
+
   addTransaction(form: any): Promise<any> {
     this.Transaction = {
-      $class: 'org.doptrace.transactionTransport',
-      'transport': this.transport.value,
-      'transactionId': this.transactionId.value,
-      'timestamp': this.timestamp.value
+      $class: "org.doptrace.transactionTransport",
+      "transport": {
+        $class: "org.doptrace.Transport",
+        "operator": "resource:org.doptrace.Logistics#"+ this.operator.value,
+        "destinationAddress": "resource:org.doptrace.Industry_Retailer#"+this.destinationAdress.value,
+        "transportedBatches": [
+          "resource:org.doptrace.Batch#"+this.transportedBatches.value
+        ],
+        "id": Math.floor(Math.random() * 1001),
+        "description": this.description.value,
+        "latitude": 160.443,
+        "longitude": 165.2,
+        "dateTime": this.now,
+        "worker": "resource:org.doptrace.Worker#"+this.worker.value
+      },
+
+    'transactionId':this.transactionId.value,
+    'timestamp':this.timestamp.value
     };
 
     this.myForm.setValue({
-      'transport': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'transportedBatches':null,
+      'destinationAdress':null
     });
 
     return this.servicetransactionTransport.addTransaction(this.Transaction)
@@ -115,9 +157,17 @@ export class transactionTransportComponent implements OnInit {
     .then(() => {
       this.errorMessage = null;
       this.myForm.setValue({
-        'transport': null,
-        'transactionId': null,
-        'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'transportedBatches':null,
+      'destinationAdress':null
       });
     })
     .catch((error) => {
@@ -129,46 +179,8 @@ export class transactionTransportComponent implements OnInit {
     });
   }
 
-  updateTransaction(form: any): Promise<any> {
-    this.Transaction = {
-      $class: 'org.doptrace.transactionTransport',
-      'transport': this.transport.value,
-      'timestamp': this.timestamp.value
-    };
+  
 
-    return this.servicetransactionTransport.updateTransaction(form.get('transactionId').value, this.Transaction)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-      this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
-
-  deleteTransaction(): Promise<any> {
-
-    return this.servicetransactionTransport.deleteTransaction(this.currentId)
-    .toPromise()
-    .then(() => {
-      this.errorMessage = null;
-    })
-    .catch((error) => {
-      if (error === 'Server error') {
-        this.errorMessage = 'Could not connect to REST server. Please check your configuration details';
-      } else if (error === '404 - Not Found') {
-        this.errorMessage = '404 - Could not find API route. Please check your available APIs.';
-      } else {
-        this.errorMessage = error;
-      }
-    });
-  }
 
   setId(id: any): void {
     this.currentId = id;
@@ -181,16 +193,20 @@ export class transactionTransportComponent implements OnInit {
     .then((result) => {
       this.errorMessage = null;
       const formObject = {
-        'transport': null,
-        'transactionId': null,
-        'timestamp': null
+        'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'transportedBatches':null,
+      'destinationAdress':null
       };
 
-      if (result.transport) {
-        formObject.transport = result.transport;
-      } else {
-        formObject.transport = null;
-      }
+      
 
       if (result.transactionId) {
         formObject.transactionId = result.transactionId;
@@ -220,9 +236,17 @@ export class transactionTransportComponent implements OnInit {
 
   resetForm(): void {
     this.myForm.setValue({
-      'transport': null,
-      'transactionId': null,
-      'timestamp': null
+      'transactionId' : null,
+      'timestamp': null,
+      'id': null,
+      'operator':null,
+      'description':null,
+      'latitude': null,
+      'longitude': null,
+      'dateTime': null,
+      'worker': null,
+      'transportedBatches':null,
+      'destinationAdress':null
     });
   }
 }

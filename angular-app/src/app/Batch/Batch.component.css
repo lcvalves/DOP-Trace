@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.container {
+ .container {
     width: 100%;
     padding-left: 72px;
     padding-right: 72px;
@@ -80,6 +80,44 @@
 label {
     color: #545454;
 }
+
+/* .search{
+    padding-left: 80px;
+    padding-right: 10px;
+    height: 100px;
+    background-color:#9900E5;
+    color:#9900E5;
+    border: 10px;
+} */
+
+.heading {
+  
+    padding: 10px;
+    margin: auto;
+    width: 50%;
+}
+
+input[name=search-box-product] {
+    width: 100px;
+    /* -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out; */
+   padding-right: 200px;
+    color:#9900E5;
+    border: 3px solid #9900E5;
+    padding: 15px;
+    height: 25px;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: 6px 6px 2px 1px rgba(0, 0, 255, .2);
+}
+
+/* When the input field gets focus, change its width to 100% */
+input[name=search-box-product]:focus {
+    /* width: 80%; */
+    color:#9900E5
+}
+
+
 .modal-content{
     margin-top: 15%;
     margin-bottom: 15%;
@@ -154,7 +192,7 @@ label {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+    max-width: fit-content;
 }
 .plus-svg{
     color: #fff;
@@ -174,4 +212,10 @@ margin-left: -4px;
 }
 ***/
 
-
+#sigma-container {
+    min-width: 200px;
+    min-height: 200px;
+    width: 60%;
+    height: 60%;
+    border: 1px solid black;
+  }
